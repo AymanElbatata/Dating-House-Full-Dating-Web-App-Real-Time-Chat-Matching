@@ -1,0 +1,239 @@
+﻿@model AYMDatingCore.PL.DTO.LoginDTO
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 90vh;
+    }
+
+    .login-box {
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px 35px;
+        width: 380px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        text-align: center;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .login-title {
+        font-size: 30px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #e91e63;
+        letter-spacing: 1px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #555;
+        display: block;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #e91e63;
+        box-shadow: 0 0 6px rgba(233, 30, 99, 0.4);
+    }
+
+    .text-danger {
+        color: #e53935;
+        font-size: 12px;
+    }
+
+    .login-btn {
+        width: 100%;
+        background: linear-gradient(to right, #ff6f61, #e91e63);
+        border: none;
+        border-radius: 25px;
+        padding: 10px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.4s;
+        box-shadow: 0 4px 10px rgba(233, 30, 99, 0.4);
+    }
+
+    .login-btn:hover {
+        background: linear-gradient(to right, #e91e63, #ff6f61);
+        transform: scale(1.03);
+    }
+
+    .login-agreement {
+        font-size: 12px;
+        margin: 18px 0;
+        line-height: 1.5;
+        color: #666;
+    }
+
+    .login-agreement a {
+        color: #e91e63;
+        text-decoration: none;
+    }
+
+    .login-help {
+        font-size: 13px;
+        margin-top: 10px;
+    }
+
+    .login-help a {
+        color: #e91e63;
+        text-decoration: none;
+    }
+
+    .login-divider {
+        margin: 25px 0;
+        position: relative;
+        text-align: center;
+        color: #999;
+        font-size: 13px;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 40%;
+        height: 1px;
+        background: #ddd;
+    }
+
+    .login-divider::before {
+        left: 0;
+    }
+
+    .login-divider::after {
+        right: 0;
+    }
+
+    .create-account-btn {
+        display: inline-block;
+        width: 100%;
+        text-align: center;
+        background: #fff;
+        border: 2px solid #e91e63;
+        color: #e91e63;
+        border-radius: 25px;
+        padding: 10px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .create-account-btn:hover {
+        background: #e91e63;
+        color: white;
+    }
+
+    .validation-summary {
+        background: #ffe8e8;
+        color: #c62828;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 13px;
+    }
+
+</style>
+
+<div class="login-container">
+    <div class="login-box">
+        @if (ViewBag.Message != null)
+        {
+            <span class="text-center ms-2 px-2" style="color:green">@ViewBag.Message</span>
+        }
+        <h1 class="login-title">💘 Welcome Back 💘</h1>
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <form id="myloginform" method="post" asp-controller="Account" asp-action="Login">
+            <input type="hidden" asp-for="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="text" asp-for="Email" class="form-input" placeholder="Enter your email" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" asp-for="Password" class="form-input" placeholder="Enter your password" required />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" asp-for="RememberMe" /> Remember me
+                </label>
+            </div>
+
+            <button type="submit" class="login-btn">💖 Sign In</button>
+        </form>
+
+        <p class="login-agreement">
+            By continuing, you agree to <strong>Dating House</strong>
+            <a asp-controller="Home" asp-action="ConditionsofUse">Conditions of Use</a> and
+            <a asp-controller="Home" asp-action="PrivacyNotice">Privacy Notice</a>.
+        </p>
+
+        <div class="login-help">
+            <a asp-controller="Account" asp-action="ForgetPassword">Forgot Password?</a>
+        </div>
+
+        <div class="login-help">
+            <a asp-controller="Home" asp-action="HelpPage">Need Help?</a>
+        </div>
+
+        <div class="login-divider">or</div>
+
+        <a asp-controller="Account" asp-action="Register" class="create-account-btn">💌 Create a New Account</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

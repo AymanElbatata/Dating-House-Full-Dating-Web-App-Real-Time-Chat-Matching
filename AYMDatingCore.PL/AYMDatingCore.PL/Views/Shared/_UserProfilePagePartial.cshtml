@@ -1,0 +1,522 @@
+﻿@model AYMDatingCore.PL.Models.UserHistoryTBL_VM
+
+
+<style>
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #ffe6f0, #ffc2d1, #ffb6c1);
+        background-size: 400% 400%;
+        animation: bgFlow 10s ease infinite;
+        padding: 20px;
+    }
+
+    @@keyframes bgFlow {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .profile-card {
+        background: #fff;
+        border-radius: 25px;
+        padding: 30px 40px;
+        max-width: 850px;
+        width: 100%;
+        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+        transition: all 0.3s ease;
+    }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .profile-header {
+        position: relative;
+    }
+
+    .profile-img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid #ff69b4;
+        box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+    }
+
+    .text-rose {
+        color: #ff1493;
+    }
+
+    .section-title {
+        color: #ff1493;
+        font-weight: bold;
+    }
+
+    .romantic-text {
+        color: #444;
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    /* --- PHOTO GALLERY --- */
+    .photo-gallery {
+        text-align: center;
+    }
+
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .photo-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+        .photo-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.4);
+        }
+
+            .photo-card:hover img {
+                transform: scale(1.1);
+            }
+
+    /* --- FULLSCREEN PREVIEW --- */
+    .image-preview-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.85);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease;
+    }
+
+        .image-preview-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .image-preview-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255,255,255,0.3);
+            animation: zoomIn 0.3s ease;
+        }
+
+    @@keyframes zoomIn {
+        from {
+            transform: scale(0.7);
+            opacity: 0;
+        }
+
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .profile-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap; /* ✅ allows wrapping on small screens */
+        gap: 15px;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Buttons will now adapt to smaller screens */
+    .action-btn {
+        background: white;
+        border: 2px solid #ff69b4;
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-size: 1rem;
+        color: #ff69b4;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center; /* ✅ centers icon and text */
+        gap: 8px;
+        box-shadow: 0 5px 10px rgba(255, 105, 180, 0.2);
+        min-width: 120px; /* ✅ makes buttons evenly sized */
+    }
+
+    /* ✅ Optional: smaller padding and font-size for phones */
+    @@media (max-width: 600px) {
+        .action-btn
+
+    {
+        font-size: 0.9rem;
+        padding: 8px 18px;
+        min-width: 100px;
+    }
+
+    }
+
+        .action-btn:hover {
+            background: #ff69b4;
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .action-btn i {
+            transition: color 0.3s ease;
+        }
+
+        .action-btn.liked i {
+            color: red;
+        }
+
+        .action-btn.favorited i {
+            color: gold;
+        }
+
+        .action-btn.blocked i {
+            color: gray;
+        }
+
+    .btn-edit-profile {
+        display: inline-block;
+        background: linear-gradient(135deg, #ff6f91, #ff9671);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 4px 10px rgba(255, 111, 145, 0.4);
+        transition: all 0.3s ease;
+    }
+
+        .btn-edit-profile:hover {
+            background: linear-gradient(135deg, #ff9671, #ff6f91);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 111, 145, 0.6);
+            color: #fff;
+        }
+
+    .report-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 22px;
+        border-radius: 50px;
+        border: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        cursor: pointer;
+        background: linear-gradient(135deg, #ff6b6b, #ff8787);
+        color: #fff;
+        box-shadow: 0 8px 18px rgba(255, 107, 107, 0.35);
+        transition: all 0.3s ease;
+    }
+
+        .report-btn i {
+            font-size: 1rem;
+        }
+
+        .report-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 14px 28px rgba(255, 107, 107, 0.45);
+            background: linear-gradient(135deg, #fa5252, #ff6b6b);
+        }
+
+        .report-btn:active {
+            transform: scale(0.97);
+        }
+
+    /* Profile image + online status */
+    .profile-img-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-status-dot {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 6px rgba(0,0,0,0.15);
+    }
+
+        /* Online / Offline */
+        .profile-status-dot.online {
+            background-color: #2ecc71; /* أخضر */
+        }
+
+        .profile-status-dot.offline {
+            background-color: #e74c3c; /* أحمر */
+        }
+
+</style>
+
+<div class="profile-container">
+    <div class="profile-card shadow-lg">
+        <div class="profile-header text-center">
+
+            <!-- Main Profile Image -->
+            @if (string.IsNullOrEmpty(Model.MainImageUrl))
+                Model.MainImageUrl = "blankprofile973460.png";
+
+            <div class="profile-img-wrapper">
+                <img src="~/ImageUsers/@Model.MainImageUrl"
+                     alt="@Model.AppUser.UserName"
+                     class="profile-img" />
+
+                <span class="profile-status-dot @(Model.AppUser.IsOnline ? "online" : "offline")"
+                      title="@(Model.AppUser.IsOnline ? "Online now" : "Offline")">
+                </span>
+            </div>
+            @if (!Model.AppUser.IsOnline && Model.AppUser.LastSeen != null)
+            {
+                <p class="small text-muted mt-1">
+                    Last seen recently @Model.AppUser.LastSeen?.ToString("dd MMM yyyy • HH:mm")
+                </p>
+            }
+            <h2 class="mt-3 text-rose">@Model.AppUser?.UserName</h2>
+            <p class="small text-muted">
+                @Model.Gender?.Name • @Model.Country?.Name • @Model.City
+            </p>
+            <p class="small text-muted">
+               Looking for a partner between: @Model.SearchAgeFrom • @Model.SearchAgeTo
+            </p>
+            <p class="small text-muted">
+                @Model.ProfileHeading
+            </p>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="photo-gallery mt-4">
+            <h4 class="section-title text-center">📸 My Photos</h4>
+            <div class="photo-grid mt-3">
+                @if (Model.UserImageTBL_VM != null && Model.UserImageTBL_VM.Any())
+                {
+                    foreach (var photo in Model.UserImageTBL_VM.Take(5))
+                    {
+                        if (string.IsNullOrEmpty(photo.ImageUrl))
+                            photo.ImageUrl = "blankprofile973460.png";
+
+                        <div class="photo-card">
+                            <img src="~/ImageUsers/@photo.ImageUrl" alt="User Photo" class="gallery-img" />
+                        </div>
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        <div class="photo-card">
+                            <img src="~/ImageUsers/blankprofile973460.png" alt="User Photo" class="gallery-img" />
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="profile-body mt-4">
+            <h4 class="section-title">💖 About Me</h4>
+            <p class="romantic-text">@Model.AboutYou</p>
+
+            <h4 class="section-title mt-4">🌹 My Partner Should Be</h4>
+            <p class="romantic-text">@Model.AboutPartner</p>
+
+            <hr />
+
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <p><strong>🎓 Education:</strong> @Model.Education?.Name</p>
+                    <p><strong>💼 Profession:</strong> @Model.Profession?.Name</p>
+                    <p><strong>💍 Marital Status:</strong> @Model.MaritalStatus?.Name</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>🗣️ Language:</strong> @Model.Language?.Name</p>
+                    <p><strong>🎯 Purpose:</strong> @Model.Purpose?.Name</p>
+                    <p><strong>💰 Financial Mode:</strong> @Model.FinancialMode?.Name</p>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+         @if (UnitOfWork.SignInManager.IsSignedIn(User))
+        {
+            if (User.Identity.Name != Model.AppUser.UserName && User.IsInRole("User"))
+            {
+                <div class="profile-actions text-center mt-4">
+                    <button id="likeBtn"
+                            class="action-btn like-btn @(Model.IsLiked ? "liked" : "")"
+                            title="Like">
+                        <i class="@(Model.IsLiked ? "fas fa-heart" : "far fa-heart")"></i>
+                        @(Model.IsLiked ? "Is Liked" : "Add Like")
+                    </button>
+
+                    <button id="favoriteBtn"
+                            class="action-btn favorite-btn @(Model.IsFavorite ? "added" : "")"
+                            title="Add to Favorites">
+                        <i class="@(Model.IsFavorite ? "fas fa-star" : "far fa-star")"></i>
+                        @(Model.IsFavorite ? "Is Favorited" : "Add to Favorite")
+                    </button>
+
+                    <button id="blockBtn"
+                            class="action-btn block-btn @(Model.Isblocked ? "blocked" : "")"
+                            title="Block User">
+                        <i class="@(Model.Isblocked ? "fas fa-ban" : "far fa-ban")"></i>
+                        @(Model.Isblocked ? "Is Blocked" : "Add block")
+                    </button>
+
+                    <button id="chatBtn" class="action-btn chat-btn"
+                    onclick="window.location.href='@Url.Action("Chat", "User", new { RecieverUserName = Model.AppUser.UserName })'">
+                        <i class="fas fa-comments"></i> Chat
+                    </button>
+
+                    <button class="action-btn report-btn mt-3"
+                            onclick="window.location.href='@Url.Action("ReportUser", "User", new { RecieverUserName = Model.AppUser.UserName })'">
+                        <i class="fas fa-flag"></i>
+                        <span>Report</span>
+                    </button>
+                </div>
+            }
+            if (User.Identity.Name == Model.AppUser.UserName && User.IsInRole("User"))
+            {
+                <div class="text-center mt-3">
+                    <a href="@Url.Action("EditProfile", "User", new { UserName = Model.AppUser.UserName })"
+                       class="btn-edit-profile">
+                        ✏️ Edit My Profile
+                    </a>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+<!-- Fullscreen Image Preview -->
+<div class="image-preview-overlay" id="imagePreviewOverlay">
+    <img id="previewImage" src="" alt="Preview" />
+</div>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const images = document.querySelectorAll(".gallery-img");
+        const overlay = document.getElementById("imagePreviewOverlay");
+        const previewImage = document.getElementById("previewImage");
+
+        images.forEach(img => {
+            img.addEventListener("click", () => {
+                previewImage.src = img.src;
+                overlay.classList.add("active");
+            });
+        });
+
+        overlay.addEventListener("click", () => {
+            overlay.classList.remove("active");
+        });
+    });
+</script>
+   
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        // 🔹 Helper for toggle buttons
+        function setupToggleButton(buttonId, actionType, activeClass, activeIcon, inactiveIcon, activeText, inactiveText) {
+            const btn = document.getElementById(buttonId);
+            if (!btn) {
+                 return;
+            }
+
+            btn.addEventListener("click", function () {
+                AddLikeFavoriteBlock("@Model.AppUser?.UserName", actionType);
+                this.classList.toggle(activeClass);
+
+                const isActive = this.classList.contains(activeClass);
+                const icon = this.querySelector("i");
+
+                if (icon) {
+                    icon.className = isActive ? activeIcon : inactiveIcon;
+                }
+
+                this.textContent = isActive ? activeText : inactiveText;
+                this.prepend(icon);
+            });
+        }
+
+        // ✅ Like button
+        setupToggleButton("likeBtn", 1, "liked", "fas fa-heart", "far fa-heart", "Is Liked", "Add Like");
+
+        // ✅ Favorite button
+        setupToggleButton("favoriteBtn", 2, "added", "fas fa-star", "far fa-star", "Is Favorited", "Add to Favorite");
+
+        // ✅ Block button
+        setupToggleButton("blockBtn", 3, "blocked", "fas fa-ban", "far fa-ban", "Is Blocked", "Add Block");
+
+        // ✅ Chat button (redirect or open modal)
+        const chatBtn = document.getElementById("chatBtn");
+        if (chatBtn) {
+            chatBtn.addEventListener("click", function () {
+                const username = '@Model.AppUser?.UserName';
+                const url = '@Url.Action("Chat", "User")' + '?RecieverUserName=' + encodeURIComponent(username);
+                window.location.href = url; // Redirect to chat
+            });
+        } 
+
+    });
+
+        function AddLikeFavoriteBlock(RecieverUserName,operation){
+            $.ajax({
+            url: '@Url.Action("AddRemoveNewLikeFavoriteBlock", "User")', // ✅ uses Razor directly
+            type: 'POST',
+            data: {
+                receiverUserName: RecieverUserName,
+                operation: operation
+            },
+            success: function (response) {
+                if (response.success) {
+                    // PrintNewMessage();
+                    // alert("Done")
+                }
+            },
+            error: function (xhr) {
+                console.error("❌ Error sending message:", xhr.responseText);
+            }
+        });
+        }
+
+    </script>

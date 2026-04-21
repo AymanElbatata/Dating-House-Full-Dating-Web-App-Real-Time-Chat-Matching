@@ -1,0 +1,202 @@
+﻿@model IEnumerable<UserMessage_VM>
+
+@{
+    ViewData["Title"] = "User Messages";
+    int number = 1;
+    string selectedUserName = Model.Where(a => a.ReceiverAppUserId == ViewBag.SelectedUserId).FirstOrDefault()?.ReceiverAppUser?.UserName
+        ?? Model.Where(a => a.SenderAppUserId == ViewBag.SelectedUserId).FirstOrDefault()?.SenderAppUser?.UserName
+        ?? ViewBag.SelectedUserName;
+    string selectedUserEmail = Model.Where(a => a.ReceiverAppUserId == ViewBag.SelectedUserId).FirstOrDefault()?.ReceiverAppUser?.Email
+        ?? Model.Where(a => a.SenderAppUserId == ViewBag.SelectedUserId).FirstOrDefault()?.SenderAppUser?.Email
+        ?? ViewBag.SelectedUserEmail;
+}
+<style>
+    body {
+        background: linear-gradient(135deg, #ffe6f0, #fff);
+    }
+
+    .messages-wrapper {
+        background: #fff;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 12px 35px rgba(214, 51, 132, 0.15);
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+
+    .message-item {
+        margin-bottom: 18px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+    }
+
+    .message-users {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #d63384;
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff5fa2, #ff85c2);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .message-date {
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .message-body {
+        background: linear-gradient(135deg, #ff5fa2, #ff85c2);
+        color: #fff;
+        padding: 14px 18px;
+        border-radius: 18px;
+        max-width: 75%;
+        line-height: 1.6;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+    }
+
+    .message-meta {
+        margin-top: 6px;
+        display: flex;
+        gap: 12px;
+    }
+
+        .message-meta a {
+            background: #fff;
+            border: 1px solid #f3c0d8;
+            color: #d63384;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .message-meta a:hover {
+                background: #d63384;
+                color: #fff;
+            }
+
+    .sn-badge {
+        background: #d63384;
+        color: #fff;
+        border-radius: 50%;
+        width: 26px;
+        height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Scrollbar */
+    .messages-wrapper::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .messages-wrapper::-webkit-scrollbar-thumb {
+        background: #f3a6c8;
+        border-radius: 10px;
+    }
+</style>
+
+<h2 class="text-center fw-bold mb-3 text-pink">💬 User Messages</h2>
+
+<div class="text-center mb-4">
+    <div class="fw-semibold text-muted">
+        @selectedUserName
+    </div>
+    <div class="text-muted small">
+        @selectedUserEmail
+    </div>
+</div>
+
+<div class="messages-wrapper">
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted fw-semibold py-5">
+            <i class="fa-regular fa-message fa-2x mb-3"></i>
+            <div>No messages found for this user.</div>
+        </div>
+    }
+    else
+    {
+        @foreach (var message in Model)
+        {
+            <div class="message-item">
+
+                <div class="message-header">
+                    <div class="message-users">
+                        <span class="sn-badge">@(number++)</span>
+
+                        <div class="avatar">
+                            @message.SenderAppUser?.UserName?.Substring(0, 1).ToUpper()
+                        </div>
+
+                        @message.SenderAppUser?.UserName
+                        →
+                        @message.ReceiverAppUser?.UserName
+
+                        @if (message.IsSeen)
+                        {
+                            <i class="fa-solid fa-check-double text-primary"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-check text-muted"></i>
+                        }
+                    </div>
+
+                    <div class="message-date">
+                        @message.CreationDate?.ToString("dd MMM yyyy • HH:mm")
+                    </div>
+                </div>
+
+                <div class="message-body">
+                    @message.Message
+                </div>
+
+                <div class="message-meta">
+                    @if (!string.IsNullOrEmpty(message.FileDataUrl))
+                    {
+                        <a href="~/FileUsers/@message.FileDataUrl" target="_blank">📎 File</a>
+                    }
+
+                    @if (!string.IsNullOrEmpty(message.AudioDataUrl))
+                    {
+                        <a href="~/AudioUsers/@message.AudioDataUrl" target="_blank">🎧 Audio</a>
+                    }
+                </div>
+
+            </div>
+        }
+    }
+
+</div>
+<div class="text-center mt-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-soft">
+        ⬅ Back to Admin Panel
+    </a>
+</div>

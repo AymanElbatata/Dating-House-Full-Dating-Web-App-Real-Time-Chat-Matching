@@ -1,0 +1,148 @@
+﻿
+@{
+    var appName = "MarryMe";
+    var TotalUserViewsCounter = UnitOfWork.AdminPanelTBLRepository.GetAllCustomized(filter: a => (a.IsDeleted == false && a.PanelName == "HomeVisitorCounter")).FirstOrDefault()?.UserViewsCounter ?? 0;
+    var currentUserCounter = new CurrentUserCounterDTO();
+    if (UnitOfWork.SignInManager.IsSignedIn(User))
+    {
+        if (User.IsInRole("User"))
+        {
+            var UserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            currentUserCounter.CounterOfNewViews = UnitOfWork.UserViewRepository.GetAllCustomized(filter: a => a.IsDeleted == false && a.IsSeen == false && a.ReceiverAppUserId == UserId && a.SenderAppUser.IsDeleted == false, includes: new Expression<Func<UserViewTBL, object>>[]{p => p.ReceiverAppUser}).Count();
+            currentUserCounter.CounterOfNewLikes = UnitOfWork.UserLikeRepository.GetAllCustomized(filter: a => a.IsDeleted == false && a.IsSeen == false && a.ReceiverAppUserId == UserId && a.SenderAppUser.IsDeleted == false, includes: new Expression<Func<UserLikeTBL, object>>[]{p => p.ReceiverAppUser}).Count();
+            currentUserCounter.CounterOfNewMessages = UnitOfWork.UserMessageRepository.GetAllCustomized(filter: a => a.IsDeleted == false && a.IsSeen == false && a.ReceiverAppUserId == UserId && a.SenderAppUser.IsDeleted == false, includes: new Expression<Func<UserMessageTBL, object>>[]{p => p.ReceiverAppUser}).Count();
+            currentUserCounter.CounterOfNewFavorites = UnitOfWork.UserFavoriteRepository.GetAllCustomized(filter: a => a.IsDeleted == false && a.IsSeen == false && a.ReceiverAppUserId == UserId && a.SenderAppUser.IsDeleted == false, includes: new Expression<Func<UserFavoriteTBL, object>>[]{p => p.ReceiverAppUser}).Count();
+            currentUserCounter.CounterOfNewBlocks = UnitOfWork.UserBlockRepository.GetAllCustomized(filter: a => a.IsDeleted == false && a.IsSeen == false && a.ReceiverAppUserId == UserId && a.SenderAppUser.IsDeleted == false, includes: new Expression<Func<UserBlockTBL, object>>[]{p => p.ReceiverAppUser}).Count();
+        }  
+    }
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ff6b8b">
+    <title>@ViewData["Title"] - Dating House</title>
+
+
+    <meta name="description" content="Freelancer's House - online work." />
+    <meta name="keywords" content="Dating, online dating, marriage, dating, love, Dating House" />
+    <meta name="author" content="Dating' House" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://Datinghouse.runasp.net/">
+
+    <!-- Open Graph (Facebook & LinkedIn) -->
+    <meta property="og:title" content="Dating House - Online Marriage" />
+    <meta property="og:description" content="Marry with us - Dating House - online dating." />
+    <meta property="og:image" content="https://Datinghouse.runasp.net/images/main/Logo.png" />
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://Datinghouse.runasp.net/" />
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="ms-icon-144x144.png">
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Dating House - Online Work" />
+    <meta name="twitter:description" content="Marry with us - Dating House - online dating." />
+    <meta name="twitter:image" content="~/Images/Main/Logo.png" />
+
+
+    <!-- Favicon  & Manifest -->
+    <link rel="icon" type="image/x-icon" href="~/favicon_io/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="~/favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon_io/favicon-16x16.png">
+    <link rel="manifest" href="~/favicon_io/site.webmanifest">
+    <link rel="mask-icon" href="~/favicon_io/safari-pinned-tab.svg" color="#ff6b8b">
+    <meta name="theme-color" content="#ffffff">
+
+
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/AYMDatingCore.PL.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/microsoft-signalr/signalr.min.js"></script>
+
+    @RenderSection("Styles", required: false)
+
+</head>
+<body class="romantic-bg">
+    <header class="shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light romantic-navbar">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="/">
+                    <img src="~/Images/Main/Logo.png" alt="MarryMe" width="40" height="40" class="me-2" />
+                    <span class="brand-text">@appName</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navMenu">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="PrivacyNotice">Privacy</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact</a></li>
+                        @if (UnitOfWork.SignInManager.IsSignedIn(User))
+                        {
+                            @if (User.IsInRole("User"))
+                            {
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="UserMessages">Messages (<span id="currentUserCounter_Messages">@currentUserCounter.CounterOfNewMessages</span>)</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="UserViews">Views (<span id="currentUserCounter_Views">@currentUserCounter.CounterOfNewViews</span>)</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="UserLikes">Likes (<span id="currentUserCounter_Likes">@currentUserCounter.CounterOfNewLikes</span>)</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="UserFavorites">Favorites (<span id="currentUserCounter_Favorites">@currentUserCounter.CounterOfNewFavorites</span>)</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="UserBlocks">Blocks (<span id="currentUserCounter_Blocks">@currentUserCounter.CounterOfNewBlocks</span>)</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Matching">Match</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Index" asp-route-UserName="@User.Identity?.Name">Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Logout">Sign Out</a></li>
+                            }
+                            else
+                            {
+                               <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Index" asp-route-UserName="@User.Identity?.Name">Admin Panel</a></li>
+                               <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Logout" asp-route-UserName="@User.Identity?.Name">Sign Out</a></li>
+                            }
+                        }
+                        else
+                        {
+@*                             <li class="nav-item"><a class="btn btn-love ms-2" asp-controller="Account" asp-action="Login">Join Now ❤️</a></li>
+ *@                            <li class="nav-item"><a class="btn ms-2" asp-controller="Account" asp-action="Login">Join Now ❤️</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <partial name="_SearchBarPartial" model="new UserMainSearchDTO { Countries = UnitOfWork.CountryTBLRepository.GetAllCustomized(
+                filter: a => a.IsDeleted == false).Select(c => new SelectListItem
+                                                             {Value = c.ID.ToString(),Text = c.Name}).ToList(), Genders = UnitOfWork.GenderTBLRepository.GetAllCustomized(
+                filter: a => a.IsDeleted == false).Select(c => new SelectListItem
+                                                             {Value = c.ID.ToString(),Text = c.Name}).ToList() }" />
+
+    </header>
+
+
+    <main role="main" class="container mt-4">
+        @RenderBody()
+    </main>
+        <!-- Footer -->
+    <div class="back-to-top mt-2" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        Back to top
+    </div>
+    <footer class="text-center py-3 mt-5 romantic-footer">
+        <p>💖 &copy; @DateTime.Now.Year - @appName  | Find your true love 💕 | (@TotalUserViewsCounter) View/s | <a class="text-black text-decoration-underline" href="https://payhip.com/b/pv81u" target="_blank">Buy Me</a></p>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,131 @@
+﻿@{
+    ViewData["Title"] = "About MarryMe 💞";
+}
+
+<!-- Romantic Styles -->
+<style>
+    body {
+        background: linear-gradient(120deg, #ffe6e6, #fff0f5, #ffe6f0);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .text-romantic {
+        color: #ff4b6e;
+    }
+
+    .card-romantic {
+        background: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 6px 20px rgba(255, 100, 120, 0.2);
+        transition: 0.3s;
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+        .card-romantic:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(255, 80, 120, 0.35);
+        }
+
+        .card-romantic h3 {
+            color: #ff4b6e;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+    .team-card {
+        width: 220px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 6px 20px rgba(255, 100, 120, 0.15);
+        transition: 0.3s ease;
+    }
+
+        .team-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 100, 120, 0.3);
+        }
+
+        .team-card img {
+            width: 100%;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            border: 4px solid #ffb6c1;
+        }
+
+        .team-card h4 {
+            margin-bottom: 5px;
+            color: #ff4b6e;
+            font-weight: 600;
+        }
+
+        .team-card p {
+            color: #777;
+            font-size: 15px;
+        }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<section class="about-section py-5">
+    <div class="container text-center">
+        <h1 class="display-5 fw-bold mb-4 text-romantic">About MarryMe 💞</h1>
+        <p class="lead text-muted mb-5">
+            Welcome to <strong>MarryMe</strong> — where hearts connect and love stories begin.
+            We’re a passionate team of dreamers, developers, and romantics building a platform to help you find your perfect match.
+        </p>
+
+        <!-- Cards -->
+        <div class="row justify-content-center g-4">
+            <div class="col-md-4">
+                <div class="card-romantic">
+                    <h3>Our Mission</h3>
+                    <p>
+                        To bring people together with sincerity and technology — helping them find love that lasts forever.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-romantic">
+                    <h3>Our Vision</h3>
+                    <p>
+                        To be the most trusted and romantic matchmaking platform across the world, connecting souls beyond borders.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-romantic">
+                    <h3>Our Values</h3>
+                    <p>
+                        Love, honesty, and respect guide every step we take — because every relationship begins with trust. ❤️
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="mt-5">
+            <h2 class="fw-bold text-romantic mb-4">Meet Our Team</h2>
+            <div class="d-flex flex-wrap justify-content-center gap-4">
+                <div class="team-card">
+                    <img src="~/Images/Main/AYM_512x512_2023.jpg" alt="Ayman Elbatata" />
+                    <h4>Ayman Elbatata</h4>
+                    <p>CEO & Founder</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

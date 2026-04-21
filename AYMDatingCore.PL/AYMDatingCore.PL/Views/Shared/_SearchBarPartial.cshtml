@@ -1,0 +1,151 @@
+﻿@model AYMDatingCore.PL.DTO.UserMainSearchDTO
+
+
+<div class="romantic-search-bar py-3">
+    <div class="container">
+        <form asp-controller="Home" asp-action="Index" method="post" class="row g-2 align-items-center justify-content-center">
+
+            <div class="col-md-2 col-6">
+                <select asp-for="IwantGender" asp-items="Model.Genders" class="form-select romantic-input">
+                    <option value="">Looking for...</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-6">
+
+                <select asp-for="CountrySearch" asp-items="Model.Countries" class="form-select romantic-input">
+                    <option value="">Country...</option>
+                </select>
+            </div>
+
+            <div class="col-md-2 col-6">
+                <input asp-for="City" class="form-control romantic-input me-2" placeholder="City..." />
+            </div>
+
+            <div class="col-md-2 col-6 d-flex align-items-center">
+                <input asp-for="AgeFrom" class="form-control romantic-input me-2" placeholder="From" value="@(ViewBag.SearchAgeMin ?? 18)" min="18" max="99" required />
+                <input asp-for="AgeTo" class="form-control romantic-input" placeholder="To" value="@(ViewBag.SearchAgeMax ?? 99)" min="18" max="99" required />
+            </div>
+
+            <div class="col-md-2 col-6 form-check d-flex align-items-center justify-content-center">
+                <input asp-for="UserHasImage" class="form-check-input romantic-checkbox me-2" type="checkbox" />
+                <label asp-for="UserHasImage" class="form-check-label">With photo</label>
+            </div>
+
+            <div class="col-md-2 col-6 text-center">
+                <button type="submit" class="btn btn-love w-100">❤️ Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@* <div id="mini-radio">
+    <button id="radioBtn">
+        <i class="fa-solid fa-play"></i>
+    </button>
+    <span>Music Radio</span>
+
+    <audio id="radioPlayer" autoplay muted>
+        <source src="https://stream.radioparadise.com/aac-320" type="audio/aac">
+    </audio>
+</div>
+
+<script>
+    const radio = document.getElementById("radioPlayer");
+    const btn = document.getElementById("radioBtn");
+    let started = false;
+    const STORAGE_KEY = "miniRadioPlaying";
+
+    // function to check if another tab is playing
+    function canPlay() {
+        return localStorage.getItem(STORAGE_KEY) !== "true";
+    }
+
+    // function to claim control
+    function claimControl() {
+        localStorage.setItem(STORAGE_KEY, "true");
+    }
+
+    // function to release control
+    function releaseControl() {
+        localStorage.setItem(STORAGE_KEY, "false");
+    }
+
+    // toggle play / pause when button clicked
+    btn.addEventListener("click", () => {
+        if (radio.paused) {
+            if (canPlay()) {
+                radio.play();
+                claimControl();
+            } else {
+                alert("Radio is already playing in another tab.");
+            }
+        } else {
+            radio.pause();
+            releaseControl();
+        }
+    });
+
+    // update icon
+    radio.addEventListener("play", () => {
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+    });
+
+    radio.addEventListener("pause", () => {
+        btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+    });
+
+    // autoplay after first user interaction
+    document.addEventListener("click", () => {
+        if (!started && canPlay()) {
+            radio.muted = false; // unmute on first click
+            radio.play().catch(() => {});
+            claimControl();
+            started = true;
+        }
+    }, { once: true });
+
+    // detect when another tab changes the state
+    window.addEventListener("storage", (e) => {
+        if (e.key === STORAGE_KEY) {
+            if (e.newValue === "true" && !radio.paused) {
+                // another tab started playing → pause this tab
+                radio.pause();
+            }
+        }
+    });
+
+    // release control when user closes tab
+    window.addEventListener("beforeunload", () => {
+        if (!radio.paused) releaseControl();
+    });
+</script>
+
+<style>
+    #mini-radio {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #111;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,.3);
+        z-index: 9999;
+    }
+
+        #mini-radio button {
+            background: #e91e63;
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+        }
+</style>
+ *@

@@ -1,0 +1,331 @@
+﻿@model AYMDatingCore.PL.DTO.RegisterDTO
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<style>
+    body {
+        background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .registration-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 40px 15px;
+    }
+
+    .registration-box {
+        background: #fff;
+        border-radius: 20px;
+        padding: 40px 35px;
+        width: 420px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .registration-title {
+        text-align: center;
+        font-size: 30px;
+        font-weight: 700;
+        color: #b83280;
+        margin-bottom: 25px;
+    }
+
+    @@keyframes fadeInUp {
+        0%
+
+    {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+        color: #444;
+    }
+
+    .form-input, .form-select {
+        width: 100%;
+        height: 38px;
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: 0.3s;
+        background-color: #fefefe;
+    }
+
+        .form-input:focus, .form-select:focus {
+            border-color: #b83280;
+            box-shadow: 0 0 4px rgba(184, 50, 128, 0.3);
+            outline: none;
+        }
+
+    .text-danger {
+        color: #d61a46;
+        font-size: 12px;
+        margin-top: 3px;
+        display: block;
+    }
+
+    .registration-btn {
+        width: 100%;
+        background: linear-gradient(to right, #b83280, #ff6f91);
+        border: none;
+        border-radius: 25px;
+        padding: 10px 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 15px;
+    }
+
+        .registration-btn:hover {
+            background: linear-gradient(to right, #ff6f91, #b83280);
+            transform: scale(1.02);
+        }
+
+    .registration-agreement {
+        font-size: 13px;
+        margin: 18px 0;
+        text-align: center;
+        color: #555;
+    }
+
+        .registration-agreement a {
+            color: #b83280;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+    .registration-divider {
+        text-align: center;
+        position: relative;
+        margin: 25px 0;
+        font-size: 13px;
+        color: #888;
+    }
+
+        .registration-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #eee;
+            z-index: 1;
+        }
+
+        .registration-divider span {
+            background-color: white;
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+    .login-redirect {
+        text-align: center;
+        font-size: 14px;
+    }
+
+        .login-redirect a {
+            color: #b83280;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .login-redirect a:hover {
+                text-decoration: underline;
+            }
+
+    .name-fields {
+        display: flex;
+        gap: 10px;
+    }
+
+    .validation-summary {
+        color: #b30000;
+        background-color: #ffeaea;
+        padding: 10px;
+        border-radius: 6px;
+        margin-bottom: 15px;
+        font-size: 13px;
+    }
+
+        .validation-summary ul {
+            margin-left: 15px;
+        }
+</style>
+@if (Model?.Errors != null && Model.Errors.Any())
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var errorGroup in Model.Errors)
+            {
+                foreach (var msg in errorGroup.Value)
+                {
+                    <li>@msg</li>
+                }
+            }
+        </ul>
+    </div>
+}
+
+<div class="registration-container">
+    <div class="registration-box">
+        <h1 class="registration-title">💖 Join Dating House</h1>
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <form id="registrationForm" method="post" asp-controller="Account" asp-action="Register">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="text" asp-for="Email" class="form-input" placeholder="Enter your email" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" asp-for="Password" class="form-input" placeholder="Create a password" required />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" asp-for="ConfirmPassword" class="form-input" placeholder="Confirm your password" required />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="name-fields">
+                <div class="form-group">
+                    <label class="form-label">First Name</label>
+                    <input type="text" asp-for="FirstName" class="form-input" placeholder="First name" required maxlength="20" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" asp-for="LastName" class="form-input" placeholder="Last name" required maxlength="20" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                <input type="date"
+                       id="dateOfBirth"
+                       asp-for="DateOFBirth"
+                       class="form-input"
+                       max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")"
+                       value="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")"
+                       required />
+
+                <span asp-validation-for="DateOFBirth" class="text-danger"></span>
+                <span id="dobError" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GenderTBLId" class="form-label"></label>
+                <select asp-for="GenderTBLId"
+                        asp-items="Model.GenderOptions"
+                        class="form-select select2"
+                        id="genderTBLId">
+                    <option value="">Select Gender</option>
+                </select>
+                <span asp-validation-for="GenderTBLId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProfessionTBLId" class="form-label"></label>
+                <select asp-for="ProfessionTBLId"
+                        asp-items="Model.ProfessionOptions"
+                        class="form-select select2"
+                        id="professionTBLId">
+                    <option value="">Select Profession</option>
+                </select>
+                <span asp-validation-for="ProfessionTBLId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CountryTBLId" class="form-label"></label>
+                <select asp-for="CountryTBLId"
+                        asp-items="Model.CountryOptions"
+                        class="form-select select2"
+                        id="countryTBLId">
+                    <option value="">Select Country</option>
+                </select>
+                <span asp-validation-for="CountryTBLId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Address</label>
+                <input type="text" asp-for="Address" class="form-input" placeholder="Your address includes your city" required maxlength="100" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phone</label>
+                <input type="text" asp-for="Phone" class="form-input" placeholder="Your phone number" required maxlength="20" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="registration-btn">💌 Create My Account</button>
+        </form>
+
+        <p class="registration-agreement">
+            By creating an account, you agree to <a asp-controller="Home" asp-action="ConditionsofUse">Terms</a> and
+            <a asp-controller="Home" asp-action="PrivacyNotice">Privacy Policy</a>.
+        </p>
+
+        <div class="registration-divider"><span>Already a member?</span></div>
+
+        <div class="login-redirect">
+            <a asp-controller="Account" asp-action="Login">💞 Sign in to find your match</a>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+ <script>
+        $(document).ready(function () {
+
+            $('.select2').select2({
+                placeholder: "Select",
+                allowClear: true,
+                width: '100%'
+            }).on('change', function () {
+                $(this).valid(); // 🔥 THIS is the fix
+            });
+
+        });
+    </script>
+
+}

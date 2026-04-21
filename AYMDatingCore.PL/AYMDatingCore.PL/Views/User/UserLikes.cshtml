@@ -1,0 +1,49 @@
+﻿@model AYMDatingCore.PL.Models.Views_Likes_Favorite_Block_VM
+
+@{
+    ViewData["Title"] = "New Likes";
+}
+
+<partial name="_Views_Likes_Favorite_BlockPartial" />
+
+
+@if (Model.UserHistoryTBL_VM.Count() > 0)
+{
+    <div class="container mt-4">
+        <h3 class="text-center text-danger">💖 New Likes 💖</h3>
+
+        <div class="row mt-3">
+            @foreach (var user in Model.UserHistoryTBL_VM)
+            {
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow-lg border-0 rounded-4" style="background:#fff0f5;">
+                        <a asp-controller="Home" asp-action="UserProfile" asp-route-UserName="@user.AppUser.UserName">
+                            @if (string.IsNullOrEmpty(user.MainImageUrl))
+                                user.MainImageUrl = "blankprofile973460.png";
+
+                            <img src="~/ImageUsers/@user.MainImageUrl" class="card-img-top rounded-top-4 fixedimageIndex" alt="@user.AppUser.UserName" />
+                        </a>
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-pink">@user.AppUser.FirstName</h5>
+                            <p class="text-muted mb-1">@user.Country.Name</p>
+                            <p>
+                                Age: @(DateTime.Today.Year - user.AppUser.DateOfBirth.Year -
+                                                        (user.AppUser.DateOfBirth.Date > DateTime.Today.AddYears(-(DateTime.Today.Year - user.AppUser.DateOfBirth.Year)) ? 1 : 0))
+                    </p>
+                    <a asp-controller="Home"
+                       asp-action="UserProfile"
+                       asp-route-UserName="@user.AppUser.UserName"
+                       class="btn btn-romantic text-white text-decoration-none px-4 py-2">
+                        💌 View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+                }
+        </div>
+    </div>
+}
+else
+{
+    <h3 class="text-center text-danger">💖 There is no one liked your profile yet.. 💖</h3>
+}

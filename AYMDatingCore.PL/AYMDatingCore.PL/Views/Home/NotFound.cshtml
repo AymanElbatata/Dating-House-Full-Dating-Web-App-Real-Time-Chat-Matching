@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Not found!";
+}
+<style>
+    .btn-love {
+        background: linear-gradient(45deg, #ff5f6d, #ffc371);
+        color: white;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 25px;
+        transition: 0.3s;
+    }
+
+        .btn-love:hover {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="d-flex flex-column align-items-center justify-content-center text-center" style="min-height: 70vh;">
+    <img src="~/Images/Main/pngtree-pink-broken-heart1749.png" alt="No user found" style="width:180px; height:auto; margin-bottom:20px;" />
+    <h2 class="text-danger fw-bold mb-3">💔 User Not Found</h2>
+    <p class="text-muted mb-4">This account is unavailable. It may have been deleted or temporarily suspended.</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-love">
+        🔙 Back to Home
+    </a>
+</div>
+

@@ -1,0 +1,239 @@
+﻿@model UserReport_DTO
+
+@{
+    ViewData["Title"] = "Report User";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f8f9fa, #fff0f6);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .report-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .report-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 40px;
+        max-width: 520px;
+        width: 100%;
+        box-shadow: 0 20px 45px rgba(214, 51, 132, 0.15);
+        animation: fadeUp .6s ease;
+    }
+
+    @@keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(25px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .report-icon {
+        font-size: 48px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .report-title {
+        text-align: center;
+        color: #d63384;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .report-subtitle {
+        text-align: center;
+        font-size: .95rem;
+        color: #777;
+        margin-bottom: 25px;
+    }
+
+    .user-box {
+        background: #fdf2f8;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 20px;
+        font-size: .9rem;
+        color: #555;
+    }
+
+        .user-box strong {
+            color: #d63384;
+        }
+
+    textarea {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid #f3c6da;
+        padding: 14px;
+        font-size: .95rem;
+        resize: none;
+        min-height: 140px;
+        transition: .2s ease;
+    }
+
+        textarea:focus {
+            outline: none;
+            border-color: #d63384;
+            box-shadow: 0 0 0 3px rgba(214, 51, 132, 0.15);
+        }
+
+    .text-danger {
+        font-size: .85rem;
+        margin-top: 6px;
+    }
+
+    .btn-report {
+        width: 100%;
+        margin-top: 25px;
+        padding: 14px;
+        border-radius: 50px;
+        border: none;
+        font-size: 1rem;
+        background: linear-gradient(135deg, #ff6b9a, #ff8fc1);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(214, 51, 132, 0.3);
+        transition: .3s ease;
+    }
+
+        .btn-report:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(214, 51, 132, 0.45);
+        }
+
+    .btn-cancel {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        font-size: .9rem;
+        color: #888;
+        text-decoration: none;
+    }
+
+        .btn-cancel:hover {
+            color: #d63384;
+            text-decoration: underline;
+        }
+</style>
+
+
+<div class="report-wrapper">
+    <div class="report-card">
+
+        <div class="report-icon">🚩</div>
+
+        <h2 class="report-title">Report User</h2>
+
+        <p class="report-subtitle">
+            Help us keep the community safe and respectful
+        </p>
+
+        @if (!string.IsNullOrEmpty(Model.ReceiverAppUserUsername))
+        {
+            <div class="user-box">
+                You are reporting user:
+                <strong>@Model.ReceiverAppUserUsername</strong>
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center rounded-pill mb-4"
+                 style="background:#ffe6f0;border:none;color:#d63384;font-weight:600;">
+                💌 @TempData["SuccessMessage"]
+            </div>
+        }
+        <form asp-action="ReportUser" asp-controller="User" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden"
+                   asp-for="ReceiverAppUserUsername" />
+
+            <div class="mb-2">
+                <label asp-for="Complaint" class="form-label fw-semibold">
+                    Your Complaint
+                </label>
+
+                <textarea asp-for="Complaint"
+                          placeholder="Please describe what happened clearly and respectfully..."></textarea>
+
+                <span asp-validation-for="Complaint"
+                      class="text-danger"></span>
+            </div>
+
+            <button id="btn_SubmitForm" type="submit" class="btn-report">
+                Submit Report
+            </button>
+
+        </form>
+
+        <a asp-action="UserProfile"
+           asp-controller="Home"
+           asp-route-UserName="@Model.ReceiverAppUserUsername"
+           class="btn-cancel">
+            Cancel & go back
+        </a>
+
+    </div>
+</div>
+
+<input type="hidden" id="hasSuccess"
+       value="@(TempData["SuccessMessage"] != null)" />
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+                if (document.getElementById("hasSuccess").value === "value")
+                {
+                    const textarea = document.querySelector("textarea[name='Complaint']");
+                    textarea.disabled = true;
+                    textarea.placeholder = "Thank you so much!";
+                    document.getElementById("btn_SubmitForm").disabled = true;
+                 }
+        });
+    </script>
+<script>
+
+    document.querySelector("form").addEventListener("submit", function (e) {
+
+        const textarea = document.querySelector("textarea[name='Complaint']");
+        const value = textarea.value.trim();
+
+        if (value.length === 0) {
+            alert("Complaint is required.");
+            textarea.focus();
+            e.preventDefault();
+            return;
+        }
+
+        if (value.length < 5) {
+            alert("Complaint must be at least 5 characters.");
+            textarea.focus();
+            e.preventDefault();
+            return;
+        }
+
+        if (value.length > 1000) {
+            alert("Complaint cannot exceed 1000 characters.");
+            textarea.focus();
+            e.preventDefault();
+            return;
+        }
+    });
+</script>
+}

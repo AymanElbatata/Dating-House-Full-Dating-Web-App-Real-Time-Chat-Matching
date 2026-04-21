@@ -1,0 +1,345 @@
+﻿@model UserSelectViewModel
+
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<!-- ===============================
+     Select2
+================================ -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<style>
+    /* ===============================
+           Global
+        ================================ */
+    body {
+        background: linear-gradient(135deg, #fde7f3, #ffffff);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .admin-wrapper {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .admin-title {
+        font-weight: 700;
+        color: #c2185b;
+    }
+
+    .admin-subtitle {
+        color: #6c757d;
+        font-size: 1.05rem;
+        margin-bottom: 45px;
+    }
+
+    /* ===============================
+           Cards
+        ================================ */
+    .admin-card {
+        border: none;
+        border-radius: 22px;
+        box-shadow: 0 12px 30px rgba(194, 24, 91, 0.15);
+        transition: all .35s ease;
+    }
+
+        .admin-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(194, 24, 91, 0.25);
+        }
+
+    .card-icon {
+        font-size: 42px;
+        margin-bottom: 15px;
+    }
+
+    /* ===============================
+           Backgrounds
+        ================================ */
+    .bg-pink {
+        background: linear-gradient(135deg, #ff5fa2, #ff85c2);
+        color: #fff;
+    }
+
+    .bg-soft {
+        background: linear-gradient(135deg, #ff9ecf, #ffd3e7);
+        color: #fff;
+    }
+
+    .bg-email {
+        background: linear-gradient(135deg, #ff7bbd, #ffb3da);
+        color: #fff;
+    }
+
+    .bg-contact {
+        background: linear-gradient(135deg, #ff8fb1, #ffd1e1);
+        color: #fff;
+    }
+
+    .bg-reports {
+        background: linear-gradient(135deg, #ff6b6b, #ff9a9a);
+        color: #fff;
+    }
+
+    /* ===============================
+           Buttons
+        ================================ */
+    .btn-soft {
+        background: #fff;
+        color: #c2185b;
+        border-radius: 30px;
+        font-weight: 600;
+        padding: 10px 26px;
+        transition: .3s ease;
+    }
+
+        .btn-soft:hover {
+            background: #c2185b;
+            color: #fff;
+        }
+
+    .btn-danger-soft {
+        background: #fff;
+        color: #ff4d4f;
+        border-radius: 30px;
+        font-weight: 600;
+        padding: 10px 26px;
+        transition: .3s ease;
+    }
+
+        .btn-danger-soft:hover {
+            background: #ff4d4f;
+            color: #fff;
+        }
+
+    .admin-form {
+        background: rgba(255,255,255,0.15);
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .form-select {
+        border-radius: 12px;
+        border: none;
+    }
+
+        .form-select:focus {
+            box-shadow: 0 0 0 2px rgba(255,255,255,.4);
+        }
+
+    .form-error {
+        display: block;
+        margin-top: 6px;
+        color: #fff8dc;
+        font-size: 0.85rem;
+    }
+</style>
+
+<div class="admin-wrapper">
+
+    <!-- Logout -->
+@*     <div class="mb-4">
+        @Html.ActionLink("Logout All Users", "LogoutAllUsers", "Admin", null, new { @class = "btn btn-soft" })
+    </div> *@
+    <div class="mb-4">
+        <a href="@Url.Action("LogoutAllUsers", "Admin")"
+           class="btn btn-soft"
+           onclick="return confirmLogout();">
+            Logout All Users
+        </a>
+    </div>
+
+    <h1 class="admin-title mb-2">Admin Control Panel</h1>
+    <p class="admin-subtitle">
+        Centralized management for users, messages, and system controls
+    </p>
+
+    <div class="container">
+        <div class="row g-4 justify-content-center">
+
+            <!-- ===============================
+                 User Messages
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-pink h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">💬</div>
+                        <h4>User Messages</h4>
+                        <p>Monitor and manage private conversations.</p>
+
+                        <form asp-action="UserMessages"
+                              asp-controller="Admin"
+                              id="GoToMessagesForm"
+                              method="get"
+                              class="admin-form">
+
+                            <div class="form-group mb-3">
+                                <select asp-for="UserId"
+                                        asp-items="Model.Users"
+                                        id="userMessagesUserId"
+                                        class="form-select">
+                                    <option value="">Select User</option>
+                                </select>
+                                <small id="userMessagesError" class="form-error"></small>
+                            </div>
+
+                            <button type="submit" class="btn btn-soft w-100">
+                                Open Messages
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================
+                 User Ip Lists
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-pink h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">🌐</div>
+                        <h4>User Ip List</h4>
+                        <p>Monitor Ip and info Lists.</p>
+
+                        <form asp-action="UserIpLists"
+                              asp-controller="Admin"
+                              id="GoToIpListForm"
+                              method="get"
+                              class="admin-form">
+
+                            <div class="form-group mb-3">
+                                <select asp-for="UserId"
+                                        asp-items="Model.Users"
+                                        id="userIpUserId"
+                                        class="form-select">
+                                    <option value="">Select User</option>
+                                </select>
+                                <small id="userIpError" class="form-error"></small>
+                            </div>
+
+                            <button type="submit" class="btn btn-soft w-100">
+                                Open IP Lists
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================
+                 User Management
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-soft h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">👥</div>
+                        <h4>User Management</h4>
+                        <p>Control profiles, roles, and access.</p>
+
+                        @Html.ActionLink("Manage Users", "UserManagement", "Admin", null,
+                        new { @class = "btn btn-soft mt-3" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================
+                 Emails
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-email h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">📧</div>
+                        <h4>User Emails</h4>
+                        <p>Audit and review outgoing emails.</p>
+
+                        @Html.ActionLink("View Emails", "UserEmails", "Admin", null,
+                                                new { @class = "btn btn-soft mt-3" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================
+                 Contact Us
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-contact h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">💌</div>
+                        <h4>Contact Messages</h4>
+                        <p>Messages received from Contact Us page.</p>
+
+                        @Html.ActionLink("View Messages", "UserContactUs", "Admin", null,
+                                                new { @class = "btn btn-soft mt-3" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================
+                 Reports
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-reports h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">🚨</div>
+                        <h4>User Reports</h4>
+                        <p>Complaints and abuse reports between users.</p>
+
+                        @Html.ActionLink("Review Reports", "UserReports", "Admin", null,
+                                                new { @class = "btn btn-danger-soft mt-3" })
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===============================
+                 Allowance Panel
+            ================================ -->
+            <div class="col-md-4">
+                <div class="card admin-card bg-reports h-100">
+                    <div class="card-body p-4">
+                        <div class="card-icon">⚙️</div>
+                        <h4>Operation Panel</h4>
+                        <p>Manage platform permissions and rules.</p>
+
+                        @Html.ActionLink("Operation Panel", "AllowancePanel", "Admin", null,
+                                                new { @class = "btn btn-danger-soft mt-3" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+     $(document).ready(function () {
+
+        // Select2 init
+        $('#userMessagesUserId, #userIpUserId').select2({
+            placeholder: "Select user",
+            width: "100%",
+            allowClear: true
+        });
+
+        // Messages validation
+        $('#GoToMessagesForm').on('submit', function (e) {
+            if (!$('#userMessagesUserId').val()) {
+                e.preventDefault();
+                $('#userMessagesError').text('Please select a user.');
+            }
+        });
+
+        // IP list validation
+        $('#GoToIpListForm').on('submit', function (e) {
+            if (!$('#userIpUserId').val()) {
+                e.preventDefault();
+                $('#userIpError').text('Please select a user.');
+            }
+        });
+    });
+
+    function confirmLogout() {
+        return confirm("⚠️ Are you sure?\nThis will log out ALL users immediately.");
+    }
+</script>

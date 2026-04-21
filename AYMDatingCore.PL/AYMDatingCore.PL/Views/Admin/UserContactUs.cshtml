@@ -1,0 +1,131 @@
+﻿@model IEnumerable<ContactUsTBL_VM>
+
+@{
+    ViewData["Title"] = "Contact Messages";
+    int number = 1;
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #ffe6f0, #fff);
+    }
+
+    .contact-admin-wrapper {
+        padding: 50px 20px;
+    }
+
+    .page-title {
+        color: #d63384;
+        font-weight: 700;
+    }
+
+    .contact-card {
+        background: #fff;
+        border-radius: 18px;
+        padding: 20px 24px;
+        box-shadow: 0 10px 25px rgba(214, 51, 132, 0.15);
+        margin-bottom: 20px;
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+        .contact-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(214, 51, 132, 0.25);
+        }
+
+    .contact-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .contact-name {
+        font-weight: 700;
+        color: #d63384;
+        font-size: 1.1rem;
+    }
+
+    .contact-email {
+        font-size: .9rem;
+        color: #6c757d;
+    }
+
+    .contact-message {
+        background: linear-gradient(135deg, #ff6fae, #ff9fcf);
+        color: #fff;
+        padding: 14px 18px;
+        border-radius: 14px;
+        margin-top: 12px;
+        white-space: pre-line;
+    }
+
+    .sn-badge {
+        background: #d63384;
+        color: #fff;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .85rem;
+        font-weight: 600;
+        margin-right: 10px;
+    }
+
+    .empty-state {
+        background: #fff;
+        border-radius: 18px;
+        padding: 40px;
+        text-align: center;
+        color: #6c757d;
+        box-shadow: 0 10px 25px rgba(214, 51, 132, 0.15);
+    }
+</style>
+
+<div class="contact-admin-wrapper container">
+
+    <h2 class="page-title text-center mb-4">💌 Contact Us Messages</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <h5>No messages yet</h5>
+            <p>Contact form submissions will appear here.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="contact-card">
+
+                <div class="contact-header">
+                    <div>
+                        <span class="sn-badge">@number</span>
+                        <span class="contact-name">@item.Name</span>
+                    </div>
+                    <small class="text-dark opacity-75">
+                        🕒 @item.CreationDate?.ToString("dd MMM yyyy • HH:mm")
+                    </small>
+                    <span class="contact-email">@item.Email</span>
+                </div>
+
+                <div class="contact-message">
+                    @item.Message
+                </div>
+
+            </div>
+
+            number++;
+        }
+    }
+
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-soft">
+        ⬅ Back to Admin Panel
+    </a>
+</div>

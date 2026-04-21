@@ -1,0 +1,150 @@
+﻿@{
+    ViewData["Title"] = "Conditions of Use";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+        font-family: 'Poppins', sans-serif;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .conditions-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 60px 20px;
+        min-height: 100vh;
+    }
+
+    .conditions-card {
+        background: #fff;
+        border-radius: 20px;
+        max-width: 850px;
+        padding: 50px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        animation: fadeInUp 0.9s ease;
+    }
+
+    @@keyframes fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    h1 {
+        text-align: center;
+        color: #e91e63;
+        font-weight: 700;
+        font-size: 36px;
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+
+    h2 {
+        color: #e91e63;
+        font-size: 22px;
+        margin-top: 25px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #555;
+    }
+
+    ul {
+        margin-left: 25px;
+        color: #555;
+    }
+
+    li {
+        margin-bottom: 10px;
+    }
+
+    .highlight {
+        color: #e91e63;
+        font-weight: 600;
+    }
+
+    .footer-note {
+        margin-top: 40px;
+        font-size: 14px;
+        color: #777;
+        text-align: center;
+    }
+
+    @@media (max-width: 768px) {
+        .conditions-card
+
+    {
+        padding: 30px 20px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    }
+</style>
+
+<div class="conditions-container">
+    <div class="conditions-card">
+        <h1>@ViewData["Title"]</h1>
+
+        <p>Welcome to <span class="highlight">Dating House</span>! These Conditions of Use govern your access and use of our website, mobile applications, and related services. By using Dating House, you agree to comply with and be legally bound by the following terms.</p>
+
+        <h2>1. Acceptance of Terms</h2>
+        <p>By registering, accessing, or using Dating House, you acknowledge that you have read, understood, and agreed to be bound by these conditions. If you do not agree, please do not use our services.</p>
+
+        <h2>2. Eligibility</h2>
+        <p>You must be at least 18 years old to use Dating House. By creating an account, you represent and warrant that you meet this requirement.</p>
+
+        <h2>3. Your Account</h2>
+        <ul>
+            <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+            <li>You agree to provide accurate, truthful, and up-to-date information.</li>
+            <li>You must not share your account or impersonate another user.</li>
+        </ul>
+
+        <h2>4. Acceptable Use</h2>
+        <p>Users are expected to behave respectfully and responsibly. The following are strictly prohibited:</p>
+        <ul>
+            <li>Harassment, abuse, or offensive behavior toward others.</li>
+            <li>Posting or sharing inappropriate or illegal content.</li>
+            <li>Attempting to hack, disrupt, or misuse the platform.</li>
+        </ul>
+
+@*         <h2>5. Subscription & Payments</h2>
+        <p>Some features require a paid subscription. Payments are securely processed through our payment partners. Refunds are handled according to our <a asp-controller="Home" asp-action="PrivacyNotice" style="color:#e91e63;text-decoration:none;">Privacy and Refund Policy</a>.</p>
+ *@
+        <h2>6. Privacy</h2>
+        <p>Your privacy is important to us. Please read our <a asp-controller="Home" asp-action="PrivacyNotice" style="color:#e91e63;text-decoration:none;">Privacy Notice</a> to understand how we handle your personal data.</p>
+
+        <h2>7. Termination</h2>
+        <p>We reserve the right to suspend or terminate accounts that violate these Conditions of Use or engage in any harmful activity.</p>
+
+        <h2>8. Disclaimer</h2>
+        <p>Dating House provides its services “as is.” We make no guarantees about the accuracy, safety, or outcomes of matches made through the platform.</p>
+
+        <h2>9. Updates to These Conditions</h2>
+        <p>We may update these terms periodically. Any changes will be posted on this page, and your continued use signifies your acceptance of the updated terms.</p>
+
+        <div class="footer-note">
+            💖 Thank you for being part of the <strong>Dating House</strong> community.
+            We’re committed to helping you find meaningful connections safely and respectfully.
+        </div>
+    </div>
+</div>

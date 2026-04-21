@@ -1,0 +1,241 @@
+﻿@model AYMDatingCore.PL.DTO.ActivationDTO
+
+@{
+    ViewData["Title"] = "Activation";
+}
+
+<style>
+    /* Activation Container */
+    .activation-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 1;
+        padding: 60px 15px;
+        background: linear-gradient(135deg, #ffe6f2 0%, #fff5e6 100%);
+        min-height: 100vh;
+    }
+
+    .activation-box {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 35px 40px;
+        width: 400px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: transform 0.2s ease;
+    }
+
+        .activation-box:hover {
+            transform: translateY(-4px);
+        }
+
+    .activation-title {
+        font-weight: 600;
+        font-size: 28px;
+        margin-bottom: 10px;
+        color: #e91e63;
+        letter-spacing: 0.5px;
+    }
+
+    .activation-subtitle {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        font-size: 13px;
+        color: #444;
+        margin-bottom: 5px;
+    }
+
+    .form-input {
+        width: 100%;
+        height: 38px;
+        padding: 6px 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #e91e63;
+            box-shadow: 0 0 6px rgba(233, 30, 99, 0.3);
+        }
+
+    .text-danger {
+        color: #c40000;
+        font-size: 12px;
+        margin-top: 3px;
+        display: block;
+    }
+
+    .activation-btn {
+        width: 100%;
+        background: linear-gradient(to right, #ff758c, #ff7eb3);
+        border: none;
+        border-radius: 6px;
+        padding: 10px 0;
+        font-size: 15px;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+        box-shadow: 0 3px 10px rgba(255, 120, 150, 0.4);
+        transition: all 0.3s ease;
+    }
+
+        .activation-btn:hover {
+            background: linear-gradient(to right, #ff6584, #ff93b8);
+            box-shadow: 0 5px 15px rgba(255, 100, 140, 0.5);
+        }
+
+    .activation-agreement {
+        font-size: 12px;
+        margin: 18px 0;
+        line-height: 1.6;
+        color: #555;
+    }
+
+        .activation-agreement a {
+            color: #e91e63;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+            .activation-agreement a:hover {
+                text-decoration: underline;
+            }
+
+    .activation-help {
+        font-size: 13px;
+        margin-top: 15px;
+    }
+
+        .activation-help a {
+            color: #e91e63;
+            text-decoration: none;
+        }
+
+            .activation-help a:hover {
+                text-decoration: underline;
+            }
+
+    .activation-divider {
+        text-align: center;
+        position: relative;
+        margin: 25px 0;
+        font-size: 13px;
+        color: #888;
+    }
+
+        .activation-divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #eee;
+            z-index: 1;
+        }
+
+        .activation-divider span {
+            background-color: white;
+            padding: 0 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+    .create-account-btn {
+        width: 100%;
+        background: linear-gradient(to right, #f8f9fa, #fce1ec);
+        border: 1px solid #e7a4b2;
+        border-radius: 6px;
+        padding: 10px 0;
+        font-size: 14px;
+        cursor: pointer;
+        text-decoration: none;
+        color: #e91e63;
+        font-weight: 600;
+        display: inline-block;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .create-account-btn:hover {
+            background: linear-gradient(to right, #ffe3ef, #f7cfe2);
+            transform: translateY(-2px);
+        }
+
+    .validation-summary {
+        color: #c40000;
+        background-color: #ffe0e6;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-size: 13px;
+    }
+
+        .validation-summary ul {
+            margin-left: 15px;
+        }
+</style>
+
+<div class="activation-container">
+    <div class="activation-box">
+        <h1 class="activation-title">Activate Your Account</h1>
+        <p class="activation-subtitle">Enter your email and activation code to verify your account ❤️</p>
+
+        <!-- Validation Summary -->
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <form method="post" asp-controller="Account" asp-action="Activation">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="text" asp-for="Email" class="form-input" placeholder="Enter your email" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Activation Code</label>
+                <input type="text" asp-for="ActivationCode" class="form-input" placeholder="Activation Code" required />
+                <span asp-validation-for="ActivationCode" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="activation-btn">Activate Now 💌</button>
+        </form>
+
+        <p class="activation-agreement">
+            By continuing, you agree to <strong>Dating House’s</strong>
+            <a asp-controller="Home" asp-action="ConditionsofUse">Conditions of Use</a> and
+            <a asp-controller="Home" asp-action="PrivacyNotice">Privacy Notice</a>.
+        </p>
+
+        <div class="activation-help">
+            <a asp-controller="Home" asp-action="HelpPage">Need help?</a>
+        </div>
+
+        <div class="activation-divider"><span>New to Dating House?</span></div>
+
+        <a asp-controller="Account" asp-action="Register" class="create-account-btn">
+            Create Your Free Account 💖
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

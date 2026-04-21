@@ -1,0 +1,161 @@
+﻿@model IEnumerable<UserReportTBL_VM>
+
+@{
+    ViewData["Title"] = "User Reports";
+    int number = 1;
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #fff0f5, #ffe6f0);
+        font-family: 'Poppins', sans-serif;
+        color: #444;
+    }
+
+    .reports-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    h2.page-title {
+        text-align: center;
+        font-size: 2rem;
+        color: #d63384;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    p.subtitle {
+        text-align: center;
+        font-size: 1rem;
+        color: #6c757d;
+        margin-bottom: 30px;
+    }
+
+    .messages-wrapper {
+        background: #fff;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 12px 35px rgba(214, 51, 132, 0.1);
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .message-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        padding: 15px 20px;
+        border-radius: 18px;
+        background: #fff0f8;
+        box-shadow: 0 6px 15px rgba(214, 51, 132, 0.08);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .message-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(214, 51, 132, 0.15);
+        }
+
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .message-users {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: #d63384;
+    }
+
+    .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff85c2, #ffb6d5);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .sn-badge {
+        background: #d63384;
+        color: #fff;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .message-date {
+        font-size: 0.75rem;
+        color: #999;
+    }
+
+    .message-body {
+        margin-top: 5px;
+        padding: 14px 18px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #ffd1dc, #fff0f5);
+        color: #444;
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    /* Scrollbar */
+    .messages-wrapper::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .messages-wrapper::-webkit-scrollbar-thumb {
+        background: #ffb6c1;
+        border-radius: 10px;
+    }
+
+</style>
+
+<div class="reports-wrapper">
+    <h2 class="page-title">📝 User Reports Dashboard</h2>
+    <p class="subtitle">View all reports submitted by users against other users</p>
+
+    <div class="messages-wrapper">
+        @foreach (var report in Model)
+        {
+            <div class="message-item">
+                <div class="message-header">
+                    <div class="message-users">
+                        <span class="sn-badge">@(number++)</span>
+                        <div class="avatar">
+                            @report.SenderAppUser?.UserName?.Substring(0, 1).ToUpper()
+                        </div>
+                        @report.SenderAppUser?.UserName → @report.ReceiverAppUser?.UserName
+                    </div>
+                    <div class="message-date">
+                        @report.CreationDate?.ToString("dd MMM yyyy • HH:mm")
+                    </div>
+                </div>
+                <div class="message-body">
+                    @report.Complaint
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-soft">
+        ⬅ Back to Admin Panel
+    </a>
+</div>

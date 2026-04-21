@@ -1,0 +1,1130 @@
+﻿@model AYMDatingCore.PL.Models.Chat_VM
+
+@{
+    ViewData["Title"] = "Chat";
+
+         bool IsThereBlocking = false;
+         string GroupName = Model.GroupName;
+         List<UserMessage_VM> PreviousMessage = Model.UserMessage_VM;
+}
+
+<style>
+    /* 🌸 Global Layout */
+    .profile-chat-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 30px;
+        background: linear-gradient(135deg, #ffe0f0, #ffd1dc);
+        min-height: 100vh;
+    }
+
+    /* 🩷 Profile Card */
+    .profile-card {
+        background: #fff;
+        border-radius: 25px;
+        max-width: 800px;
+        width: 100%;
+        padding: 25px 30px;
+        box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+
+        .profile-card:hover {
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.4);
+        }
+
+    /* 👤 Profile Image */
+    .profile-img {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        border: 4px solid #ff69b4;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+        .profile-img:hover {
+            transform: scale(1.1);
+        }
+
+    /* 💖 Text Colors */
+    .text-rose {
+        color: #ff1493;
+    }
+
+    /* ✨ Chat Section */
+    .chat-section {
+        background: #fff8fa;
+        border-radius: 15px;
+        padding: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-top: 1.5rem;
+    }
+
+    .message-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .message-item {
+        background: #ffeaf2;
+        border-radius: 10px;
+        padding: 10px 15px;
+        margin: 8px 0;
+        transition: all 0.2s ease;
+    }
+
+        .message-item.sent {
+            background: #ffd1dc;
+        }
+
+    .message-meta {
+        font-size: 0.8rem;
+        color: #777;
+        margin-bottom: 5px;
+    }
+
+    .message-text {
+        font-size: 1rem;
+        color: #333;
+        word-wrap: break-word;
+    }
+
+    /* 🗨️ Chat Input */
+    .chat-input {
+        margin-top: 20px;
+    }
+
+    .chat-btn {
+        background-color: #ff69b4;
+        color: #fff !important;
+        border-radius: 25px;
+        padding: 8px 16px;
+        border: none;
+        transition: 0.3s ease;
+    }
+
+        .chat-btn:hover {
+            background-color: #ff4da6;
+        }
+
+    /* 🎙 Voice Recorder & File Upload Buttons */
+    .voice-recorder-container,
+    .file-upload-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    .voice-controls,
+    .file-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    /* 🎛 FAB Buttons (Unified Style) */
+    .voice-btn {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 22px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+    }
+
+    /* 🎤 Mic (Green) */
+    .mic-btn {
+        background-color: #25D366;
+        color: #fff;
+    }
+
+        .mic-btn:hover {
+            background-color: #1EBE5A;
+            transform: scale(1.1);
+        }
+
+    /* 🛑 Stop (Red) */
+    .stop-btn {
+        background-color: #FF3B30;
+        color: #fff;
+    }
+
+        .stop-btn:hover {
+            background-color: #e63228;
+            transform: scale(1.1);
+        }
+
+    /* 📁 File (Pink Variants) */
+    .file-btn {
+        background-color: #ffb6c1;
+        color: #fff;
+    }
+
+    .upload-btn {
+        background-color: #ff85a2;
+        color: #fff;
+    }
+
+        .file-btn:hover,
+        .upload-btn:hover {
+            transform: scale(1.1);
+            filter: brightness(1.1);
+        }
+
+    /* 🎞 Dots Animation (Recording / Uploading) */
+    .recording-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        height: 20px;
+    }
+
+    .dot {
+        width: 6px;
+        height: 6px;
+        background-color: #ff69b4;
+        border-radius: 50%;
+        animation: blink 1.4s infinite both;
+    }
+
+        .dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+    @@keyframes blink {
+        0%, 80%, 100%
+
+    {
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1.3);
+    }
+
+    }
+
+    /* 📱 Responsive Design */
+    @@media (max-width: 600px) {
+        .profile-card
+
+    {
+        padding: 20px;
+    }
+
+    .voice-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    .chat-section {
+        max-height: 300px;
+    }
+
+    }
+
+    .chat-file-preview {
+        display: flex;
+        align-items: center;
+        background: #fff0f5;
+        border-radius: 12px;
+        padding: 8px 12px;
+        max-width: 100%;
+        margin-top: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: background 0.2s ease;
+    }
+
+        .chat-file-preview:hover {
+            background: #ffe4ed;
+        }
+
+        .chat-file-preview .file-icon {
+            background: #ffb6c1;
+            color: white;
+            border-radius: 50%;
+            padding: 10px;
+            max-width: 50%;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .chat-file-preview .file-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-file-preview .file-name {
+            color: #ff1493;
+            text-decoration: none;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+            .chat-file-preview .file-name:hover {
+                text-decoration: underline;
+            }
+
+        .chat-file-preview .file-size {
+            font-size: 12px;
+            color: #777;
+        }
+
+    /* 🖼 Image preview */
+    .chat-image-preview img {
+        max-width: 25%;
+        max-height: 25%;
+        border-radius: 12px;
+        margin-top: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    /* 🎥 Video preview */
+    .chat-video-preview video {
+        max-width: 25%;
+        max-height: 25%;
+        border-radius: 12px;
+        margin-top: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    }
+
+    /* Profile image + online status */
+    .profile-img-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .profile-status-dot {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 6px rgba(0,0,0,0.15);
+    }
+
+        /* Online / Offline */
+        .profile-status-dot.online {
+            background-color: #2ecc71; /* أخضر */
+        }
+
+        .profile-status-dot.offline {
+            background-color: #e74c3c; /* أحمر */
+        }
+</style>
+
+
+<div class="profile-chat-container">
+    <div class="profile-card shadow-lg text-center">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            @if (string.IsNullOrEmpty(Model.UserHistoryTBL_VM.MainImageUrl))
+                Model.UserHistoryTBL_VM.MainImageUrl = "blankprofile973460.png";
+
+            <a asp-controller="Home" asp-action="UserProfile" asp-route-UserName="@Model.UserHistoryTBL_VM.AppUser.UserName">
+@*                 <img src="~/ImageUsers/@Model.UserHistoryTBL_VM.MainImageUrl" alt="Profile Image" class="profile-img" />
+ *@                <div class="profile-img-wrapper">
+                    <img src="~/ImageUsers/@Model.UserHistoryTBL_VM.MainImageUrl"
+                         alt="@Model.UserHistoryTBL_VM.AppUser.UserName"
+                         class="profile-img" />
+
+                    <span class="profile-status-dot @(Model.UserHistoryTBL_VM.AppUser.IsOnline ? "online" : "offline")"
+                          title="@(Model.UserHistoryTBL_VM.AppUser.IsOnline ? "Online now" : "Offline")">
+                    </span>
+                </div>
+            </a>
+
+
+            <h2 class="mt-3 text-rose">@Model.UserHistoryTBL_VM.AppUser?.UserName</h2>
+            <p class="small text-muted">
+                @Model.UserHistoryTBL_VM.Gender?.Name • @Model.UserHistoryTBL_VM.Country?.Name • @Model.UserHistoryTBL_VM.City
+            </p>
+            <p class="small text-muted">
+                🎯 Looking for a partner between: <strong>@Model.UserHistoryTBL_VM.SearchAgeFrom</strong> - <strong>@Model.UserHistoryTBL_VM.SearchAgeTo</strong>
+            </p>
+
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-section mt-4 text-start">
+            <ul class="message-list" id="MessageListArea">
+                @if (PreviousMessage != null && PreviousMessage.Any())
+                {
+                    foreach (var msg in PreviousMessage)
+                    {
+                        <li class="message-item @(msg.SenderAppUser.UserName == User.Identity.Name ? "sent" : "received")">
+                            <p class="message-meta">@msg.CreationDate?.ToString("dd MMMM yyyy, hh:mm tt") • <strong>@msg.SenderAppUser.UserName</strong>
+                                @if (msg.IsSeen)
+                                {
+                                    <i class="fa-solid fa-check-double text-primary"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa-solid fa-check text-muted"></i>
+                                }
+                            </p>
+                            @if (!string.IsNullOrEmpty(msg.Message))
+                            {
+                                <p class="message-text">@msg.Message</p>
+                            }
+                            else if (!string.IsNullOrEmpty(msg.AudioDataUrl))
+                            {
+                                <audio controls style="width:100%;">
+                                    <source src="~/AudioUsers/@msg.AudioDataUrl" type="audio/webm">
+                                    Your browser does not support audio playback.
+                                </audio>
+                            }
+                            else
+                            {
+                                @if (msg.FileDataUrl != null)
+                                {
+                                    var filePath = Url.Content($"~/FileUsers/{msg.FileDataUrl}");
+                                    var fileExtension = System.IO.Path.GetExtension(msg.FileDataUrl).ToLower();
+
+                                    if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png" || fileExtension == ".gif")
+                                    {
+                                        <div class="chat-image-preview">
+                                            <a href="@filePath" target="_blank">
+                                                <img src="@filePath" alt="Image preview" />
+                                            </a>
+                                        </div>
+                                    }
+                                    else if (fileExtension == ".mp4" || fileExtension == ".webm" || fileExtension == ".ogg")
+                                    {
+                                        <div class="chat-video-preview">
+                                            <video controls>
+                                                <source src="@filePath" type="video/@fileExtension.TrimStart('.')">
+                                                Your browser does not support video playback.
+                                            </video>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="chat-file-preview">
+                                            <div class="file-icon">
+                                                <i class="fa fa-file"></i>
+                                            </div>
+                                            <div class="file-info">
+                                                <a href="@filePath" target="_blank" download class="file-name">@msg.FileDataUrl</a>
+                                                <small class="file-size">File</small>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </li>
+                    }
+                }
+                else
+                {
+                    <li id="ThereISNoMessagesyet" class="text-center text-muted">No messages yet 💬</li>
+                }
+            </ul>
+        </div>
+
+        <!-- Message Input -->
+        <div class="chat-input mt-3">
+            @if (!Model.IsThereBlocking)
+            {
+                <input id="sendButtonMsg" placeholder="Write your message and hit Enter..." onkeyup="CheckEnter()" class="form-control" />
+                <div class="voice-recorder-container">
+                    <div class="voice-controls">
+                        <button id="startBtn" class="voice-btn mic-btn">
+                            <i class="fa fa-microphone"></i>
+                        </button>
+
+                        <div id="recordingDots" class="recording-dots" style="display: none;">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+
+                        <button id="stopBtn" class="voice-btn stop-btn" disabled>
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="file-upload-container mt-3">
+                    <div class="file-controls d-flex align-items-center gap-2">
+                        <!-- Hidden file input -->
+                        <input type="file" id="userFile" class="form-control-file" style="display: none;" />
+
+                        <!-- Choose File Button -->
+                        <button id="chooseFileBtn" class="voice-btn file-btn" onclick="document.getElementById('userFile').click()">
+                            <i class="fa fa-folder-open"></i>
+                        </button>
+
+                        <!-- Upload Button -->
+                        <button id="uploadBtn" class="voice-btn upload-btn" disabled>
+                            <i class="fa fa-upload"></i>
+                        </button>
+
+                        <!-- Dots animation (same as recording) -->
+                        <div id="uploadDots" class="recording-dots" style="display: none;">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+
+                    <!-- Optional filename display -->
+                    <p id="selectedFileName" class="text-muted mt-2" style="font-size: 0.9rem;"></p>
+                </div>
+
+                <!-- 🎧 Voice Call Buttons -->
+                <div class="voice-call-container">
+                    <button id="callBtn" class="btn btn-success"><i class="fa fa-phone"></i> Call</button>
+                    <button id="hangupBtn" class="btn btn-danger" style="display:none;"><i class="fa fa-phone-slash"></i> End</button>
+                </div>
+
+                <!-- 🔔 Ringing Audio -->
+                <audio id="ringtone" src="~/Sounds/MakeCall.mp3" preload="auto"></audio>
+                <audio id="callAcceptSound" src="~/Sounds/StartCall.mp3" preload="auto"></audio>
+                <audio id="callRejectSound" src="~/Sounds/RejectCall.mp3" preload="auto"></audio>
+                <audio id="callEndSound" src="~/Sounds/EndCall.mp3" preload="auto"></audio>
+                <audio id="SendingMessageSound" src="~/Sounds/WirlessSignal.mp3" preload="auto"></audio>
+
+                <!-- 🎙️ Voice Call View -->
+                <div id="callArea" style="display:none; text-align:center; margin-top:20px;">
+                    <h4 id="callStatus">Connecting...</h4>
+                    <audio id="remoteAudio" autoplay></audio>
+                </div>
+            }
+            else
+            {
+                <p class="text-center text-danger mt-3">🚫 Sorry, you can’t send messages — there is blocking!.</p>
+            }
+            <p class="text-center text-danger mt-3" id="thereisBlockingBtn" style="display:none;">
+                🚫 Sorry, you can’t send messages — there is blocking!.
+            </p>
+        </div>
+    </div>
+</div>
+
+
+<script>
+        const SendingMessageSound = document.getElementById("SendingMessageSound");
+
+     let CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
+         const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .configureLogging(signalR.LogLevel.Information)
+        .build();
+
+     connection.start().then(function () {
+        connection.invoke("JoinGroup", "@Model.GroupName");
+        GoToLastMessage();
+        GototheBottomoFPage2();
+
+    });
+
+    connection.onclose(err => {
+        console.error("🚨 Connection closed:", err);
+    });
+
+    function CheckEnter(){
+        if(!IsThereBlockingBetweenUsers()){      
+
+        CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
+        if (event.key === "Enter" && CurrentUserChatMessage.trim() !== "") {
+            // TODO: Call SignalR sendMessage function here
+            SaveinDB("@Model.ReceiverAppUser.UserName",CurrentUserChatMessage);
+            connection.invoke("SendMessageToGroup", "@Model.GroupName", CurrentUserChatMessage,"@Model.SenderAppUser.UserName");
+
+            // input.value = "";      
+        }}
+        }
+      connection.on("ReceiveGroupMessage", function (message,SenderUserName) {
+              if ($('#ThereISNoMessagesyet').length) 
+                {
+                  $('#ThereISNoMessagesyet').hide();
+                }
+             if(!IsThereBlockingBetweenUsers()){
+
+             SendingMessageSound.play();
+            PrintNewMessage(message,SenderUserName);
+             }
+      });
+
+    function SaveinDB(RecieverUserName,CurrentMessage){
+        $.ajax({
+            url: '@Url.Action("SaveMessageinChat", "User")', // ✅ uses Razor directly
+            type: 'POST',
+            data: {
+                receiverUserName: RecieverUserName,
+                message: CurrentMessage
+            },
+            success: function (response) {
+                if (response.success) {
+                    // PrintNewMessage();
+                    document.getElementById("sendButtonMsg").value = "";
+                }
+                else{
+
+                }
+            },
+            error: function (xhr) {
+                console.error("❌ Error sending message:", xhr.responseText);
+            }
+        });
+    }
+
+    function IsThereBlockingBetweenUsers(){
+            $.ajax({
+            url: '@Url.Action("IsThereBlockingBetweenUsers", "User")', // ✅ uses Razor directly
+            type: 'POST',
+            data: {
+                receiverUserName: '@Model.ReceiverAppUser.UserName',
+            },
+            success: function (response) {
+                if (response.success) {
+                    ActionInBlockingFunc();
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            },
+            error: function (xhr) {
+                console.error("❌ Error sending message:", xhr.responseText);
+            }
+        });
+    }
+
+    function ActionInBlockingFunc(){
+                    $('#sendButtonMsg').remove();
+                    $('#startBtn').remove();
+                    $('#stopBtn').remove();
+                    $('#chooseFileBtn').remove();
+                    $('#uploadBtn').remove();
+                    $('#userFile').remove();
+                    $('#recordingDots').remove();
+                    $('#callBtn').remove();
+                    $('#hangupBtn').remove();
+                    $('#thereisBlockingBtn').show();
+    }
+
+
+    function PrintNewMessage(message,SenderUserName){
+                let list = document.getElementById("MessageListArea");
+                // Create new <li>
+                let li = document.createElement("li");
+                li.classList.add("message-item");
+
+                // Check if message is from current user
+                const currentUser = '@User.Identity.Name';
+                if (SenderUserName === currentUser) {
+                    li.classList.add("sent");
+                } else {
+                    li.classList.add("received");
+                }
+
+                // Message content
+                li.innerHTML = `
+                    <p class="message-meta">${"@DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt")"} • <strong>${SenderUserName}</strong>  <i class="fa-solid fa-check text-muted"></i></p>
+                    <p class="message-text">${message}</p>
+                `;
+
+                list.appendChild(li);
+                GoToLastMessage();
+                // Optional: scroll to bottom
+                // list.scrollTop = list.scrollHeight;
+    }
+      
+    function GoToLastMessage(){
+            setTimeout(() => {
+        let chatBox = document.querySelector('.chat-section');
+        if (chatBox) {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    }, 100);
+    }
+
+    function GototheBottomoFPage2(){
+              setTimeout(function () {
+        $(window).scrollTop($(document).height());
+      }, 50);
+    }
+</script>
+
+<script>
+    // --- Voice recording setup ---
+    let mediaRecorder;
+    let audioChunks = [];
+
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const recordingDots = document.getElementById("recordingDots");
+
+   
+    document.getElementById("startBtn").addEventListener("click", async () => {
+            recordingDots.style.display = "flex";
+        if(!IsThereBlockingBetweenUsers())
+        {
+
+        try {
+
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = e => {
+                if (e.data.size > 0) audioChunks.push(e.data);
+            };
+
+            mediaRecorder.start();
+            document.getElementById("startBtn").disabled = true;
+            document.getElementById("stopBtn").disabled = false;
+            console.log("🎙️ Recording started...");
+
+        } catch (err) {
+            console.error("❌ Microphone access error:", err);
+            alert("Microphone access denied or unavailable.");
+        }
+
+        }
+    });
+   
+    document.getElementById("stopBtn").addEventListener("click", async () => {
+            recordingDots.style.display = "none";
+        if(!IsThereBlockingBetweenUsers())
+        {
+        if (!mediaRecorder) return;
+
+        mediaRecorder.stop();
+        mediaRecorder.onstop = async () => {
+            const blob = new Blob(audioChunks, { type: "audio/webm" });
+            const base64Audio = await blobToBase64(blob);
+
+            // 🔹 Match your message structure
+            connection.invoke(
+                "SendAudioToGroup", // Hub method name
+                "@Model.GroupName", // Group name
+                "@Model.SenderAppUser.UserName", // Sender username
+                base64Audio
+            ).catch(err => console.error("❌ Error sending audio:", err));
+
+           SaveAudioInDB("@Model.ReceiverAppUser.UserName", base64Audio);
+
+            document.getElementById("startBtn").disabled = false;
+            document.getElementById("stopBtn").disabled = true;
+            console.log("🎧 Audio sent!");
+        };
+
+        }
+    });
+
+    // Convert Blob to Base64
+    function blobToBase64(blob) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    // --- Receiving and displaying voice messages ---
+    connection.on("ReceiveAudioFromGroup", (senderUserName, base64Audio) => {
+        if ($('#ThereISNoMessagesyet').length) {
+            $('#ThereISNoMessagesyet').hide();
+        }
+
+        IsThereBlockingBetweenUsers();
+
+        const list = document.getElementById("MessageListArea");
+        const li = document.createElement("li");
+        li.classList.add("message-item");
+
+        const currentUser = '@User.Identity.Name';
+        if (senderUserName === currentUser) {
+            li.classList.add("sent");
+        } else {
+            li.classList.add("received");
+        }
+
+        const audioSrc = `data:audio/webm;base64,${base64Audio}`;
+        const audioElement = `
+            <audio controls style="width:100%;">
+                <source src="${audioSrc}" type="audio/webm">
+                Your browser does not support audio playback.
+            </audio>
+        `;
+
+        li.innerHTML = `
+            <p class="message-meta">${"@DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt")"} • <strong>${senderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
+            ${audioElement}
+        `;
+
+        list.appendChild(li);
+       SendingMessageSound.play();
+        GoToLastMessage();
+    });
+
+
+    function SaveAudioInDB(RecieverUserName, Base64Audio) {
+        $.ajax({
+            url: '@Url.Action("SaveAudioMessageInChat", "User")', // new controller action
+            type: 'POST',
+            data: {
+                receiverUserName: RecieverUserName,
+                base64Audio: Base64Audio
+            },
+            success: function (response) {
+                if (response.success) {
+
+                } else {
+
+                }
+            },
+            error: function (xhr) {
+                console.error("❌ Error saving audio:", xhr.responseText);
+            }
+        });
+    }
+
+</script>
+
+<script>
+        document.getElementById("userFile").addEventListener("change", function () {
+        const file = this.files[0];
+        const uploadBtn = document.getElementById("uploadBtn");
+        const fileNameLabel = document.getElementById("selectedFileName");
+
+        if (file) {
+            uploadBtn.disabled = false;
+            fileNameLabel.textContent = `📂 Selected: ${file.name}`;
+        } else {
+            uploadBtn.disabled = true;
+            fileNameLabel.textContent = "";
+        }
+    });
+    // --- File upload setup ---
+    const uploadBtn = document.getElementById("uploadBtn");
+    const fileInput = document.getElementById("userFile");
+    const uploadDots = document.getElementById("uploadDots"); // Optional animation like recordingDots
+
+    // --- Handle File Upload Button Click ---
+    uploadBtn.addEventListener("click", async () => {
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("Please select a file first.");
+            return;
+        }
+
+        const file = fileInput.files[0];
+            const maxFileSize = 5 * 1024 * 1024; // 5 MB in bytes
+    if (file.size > maxFileSize) {
+        alert("⚠️ The file size must be less than 5 MB.");
+        return;
+    }
+        uploadDots.style.display = "flex"; // show uploading animation if you have one
+
+
+        try {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            // 🔹 Save file in database and server folder
+            SaveFileInDB("@Model.ReceiverAppUser.UserName", file);
+
+            uploadBtn.disabled = true;
+            console.log("📁 File upload started...");
+        } catch (err) {
+            console.error("❌ File upload error:", err);
+            alert("File upload failed. Please try again.");
+        }
+    });
+
+    // --- Save File in DB via AJAX ---
+    async function SaveFileInDB(ReceiverUserName, file) {
+        const formData = new FormData();
+        formData.append("receiverUserName", ReceiverUserName);
+        formData.append("file", file);
+
+        $.ajax({
+            url: '@Url.Action("SaveFileMessageInChat", "User")', // new controller action
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                uploadDots.style.display = "none";
+                uploadBtn.disabled = false;
+
+                if (response.success) {
+
+                // 🔹 Match your message structure — send via SignalR to group
+                connection.invoke(
+                    "SendFileToGroup", // Hub method name
+                    "@Model.GroupName", // Group name
+                    "@Model.SenderAppUser.UserName", // Sender username
+                     response.fileUrl // sending just file name for real-time notification
+                ).catch(err => console.error("❌ Error sending file notification:", err));
+                 $("#selectedFileName").text("");
+
+                } else {
+                    
+                }
+            },
+            error: function (xhr) {
+                uploadDots.style.display = "none";
+                uploadBtn.disabled = false;
+                console.error("❌ Error saving file:", xhr.responseText);
+            }
+        });
+    }
+
+    // --- Receiving and displaying file messages ---
+    connection.on("ReceiveFileFromGroup", (senderUserName, fileName) => {
+        if ($('#ThereISNoMessagesyet').length) {
+            $('#ThereISNoMessagesyet').hide();
+        }
+
+         IsThereBlockingBetweenUsers();
+
+        const list = document.getElementById("MessageListArea");
+        const li = document.createElement("li");
+        li.classList.add("message-item");
+
+        const currentUser = '@User.Identity.Name';
+        if (senderUserName === currentUser) {
+            li.classList.add("sent");
+        } else {
+            li.classList.add("received");
+        }
+
+        const fileUrl = `../FileUsers/${fileName}`;
+    let fileElement = `
+        <p class="message-meta">${"@DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt")"} • <strong>${senderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
+    `;
+
+    if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
+        fileElement += `
+            <div class="chat-image-preview">
+                <a href="${fileUrl}" target="_blank">
+                    <img src="${fileUrl}" alt="Image preview" />
+                </a>
+            </div>
+        `;
+    } else if (/\.(mp4|webm|ogg)$/i.test(fileName)) {
+        fileElement += `
+            <div class="chat-video-preview">
+                <video controls>
+                    <source src="${fileUrl}" type="video/${fileName.split('.').pop()}">
+                    Your browser does not support video playback.
+                </video>
+            </div>
+        `;
+    } else {
+        fileElement += `
+            <div class="chat-file-preview">
+                <div class="file-icon"><i class="fa fa-file"></i></div>
+                <div class="file-info">
+                    <a href="${fileUrl}" target="_blank" download="${fileName}" class="file-name">${fileName}</a>
+                    <small class="file-size">File</small>
+                </div>
+            </div>
+        `;
+    }
+
+        li.innerHTML = fileElement;
+        list.appendChild(li);
+        SendingMessageSound.play();
+        GoToLastMessage();
+    });
+</script>
+
+<script>
+    let localStream;
+    let peerConnection;
+    const configuration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+    const callBtn = document.getElementById("callBtn");
+    const hangupBtn = document.getElementById("hangupBtn");
+    const ringtone = document.getElementById("ringtone");
+    const callAcceptSound = document.getElementById("callAcceptSound");
+    const callRejectSound = document.getElementById("callRejectSound");
+    const callEndSound = document.getElementById("callEndSound");
+    const callArea = document.getElementById("callArea");
+    const remoteAudio = document.getElementById("remoteAudio");
+    const callStatus = document.getElementById("callStatus");
+
+    const currentUser = "@Model.SenderAppUser.Id";
+    const receiverUser = "@Model.ReceiverAppUser.Id";
+
+    // --- 1️⃣ Call button clicked ---
+    callBtn.onclick = async () => {
+        if(!IsThereBlockingBetweenUsers())
+        {     
+        ringtone.play();
+        callStatus.innerText = `Calling ${'@Model.ReceiverAppUser.UserName'}...`;
+        callArea.style.display = "block";
+        await connection.invoke("CallUser", currentUser, receiverUser);
+        }
+    };
+
+    // --- 2️⃣ When incoming call arrives ---
+    connection.on("IncomingCall", async (caller) => {
+        if(!IsThereBlockingBetweenUsers())
+        {       
+        ringtone.play();
+          let userWhocaller = caller == '@Model.Users_VM.FirstOrDefault().Id' ? '@Model.Users_VM.FirstOrDefault().UserName' : '@Model.Users_VM.LastOrDefault().UserName';
+        const accept = confirm(`📞 ${userWhocaller} is calling you. Accept?`);
+         if (accept) {
+            ringtone.pause();
+            callAcceptSound.play();
+            await connection.invoke("AcceptCall", caller, currentUser);
+            startVoiceCall(caller, true);
+        } else {
+            await connection.invoke("RejectCall", caller, currentUser);
+        }
+        }
+    });
+
+    // --- 3️⃣ When call accepted ---
+    connection.on("CallAccepted", (receiver) => {
+        if(!IsThereBlockingBetweenUsers())
+        {
+        ringtone.pause();
+        callAcceptSound.play();
+        startVoiceCall(receiver, false);
+        }
+    });
+
+    // --- 4️⃣ When call rejected ---
+    connection.on("CallRejected", (receiver) => {
+        if(!IsThereBlockingBetweenUsers())
+        {
+        ringtone.pause();
+        callRejectSound.play();
+        let userWhoEndedreceiver = receiver == '@Model.Users_VM.FirstOrDefault().Id' ? '@Model.Users_VM.FirstOrDefault().UserName' : '@Model.Users_VM.LastOrDefault().UserName';
+        alert(`${userWhoEndedreceiver} rejected your call.`);
+        callArea.style.display = "none";
+        }
+    });
+
+    // --- 5️⃣ Start WebRTC connection ---
+    async function startVoiceCall(remoteUser, isReceiver) {
+        if(!IsThereBlockingBetweenUsers())
+        {
+        callBtn.style.display = "none";
+        hangupBtn.style.display = "inline-block";
+        callStatus.innerText = "Connected 🎙️";
+        callArea.style.display = "block";
+
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        peerConnection = new RTCPeerConnection(configuration);
+
+        // Stream local mic audio
+        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+        // Receive remote audio
+        peerConnection.ontrack = event => {
+            remoteAudio.srcObject = event.streams[0];
+        };
+
+        // ICE candidate exchange
+        peerConnection.onicecandidate = event => {
+            if (event.candidate) {
+                connection.invoke("SendIceCandidate", remoteUser, JSON.stringify(event.candidate));
+            }
+        };
+
+        if (isReceiver) {
+            connection.on("ReceiveOffer", async (offerJson) => {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offerJson)));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                connection.invoke("SendAnswer", remoteUser, JSON.stringify(answer));
+            });
+        } else {
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            connection.invoke("SendOffer", remoteUser, JSON.stringify(offer));
+        }
+
+        connection.on("ReceiveAnswer", async (answerJson) => {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answerJson)));
+        });
+
+        connection.on("ReceiveIceCandidate", async (candidateJson) => {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidateJson)));
+        });
+        }
+    }
+
+    // --- 6️⃣ Hang up ---
+        hangupBtn.onclick = async () => {
+        if(!IsThereBlockingBetweenUsers())
+        {
+        if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+
+        callArea.style.display = "none";
+        callBtn.style.display = "inline-block";
+        hangupBtn.style.display = "none";
+        ringtone.pause();
+        callAcceptSound.pause();
+        callStatus.innerText = "";
+
+        SaveinDB("@Model.ReceiverAppUser.UserName","Voice Call had been ended..");
+        connection.invoke("SendMessageToGroup", "@Model.GroupName", "Voice Call had been ended..","@Model.SenderAppUser.UserName");
+
+        // 🔹 Notify the other user that the call has ended
+        await connection.invoke("EndCall", currentUser, receiverUser);
+        }
+    };
+
+    // --- 7️⃣ Listen for remote hang up ---
+    connection.on("CallEnded", (userWhoEnded) => {
+        if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+
+        IsThereBlockingBetweenUsers();
+
+        callArea.style.display = "none";
+        callBtn.style.display = "inline-block";
+        hangupBtn.style.display = "none";
+        ringtone.pause();
+        callAcceptSound.pause();
+        callEndSound.play();
+      let userWhoEndedUserName = userWhoEnded == '@Model.Users_VM.FirstOrDefault().Id' ? '@Model.Users_VM.FirstOrDefault().UserName' : '@Model.Users_VM.LastOrDefault().UserName';
+        callStatus.innerText = `${userWhoEndedUserName} ended the call.`;
+        alert(`${userWhoEndedUserName} ended the call.`)
+    });
+
+</script>

@@ -1,0 +1,15 @@
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\bin\Release\net9.0\AYMDatingCore.BLL.deps.json
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\bin\Release\net9.0\AYMDatingCore.BLL.dll
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\bin\Release\net9.0\AYMDatingCore.BLL.pdb
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\bin\Release\net9.0\AYMDatingCore.DAL.dll
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\bin\Release\net9.0\AYMDatingCore.DAL.pdb
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.csproj.AssemblyReference.cache
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.GeneratedMSBuildEditorConfig.editorconfig
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.AssemblyInfoInputs.cache
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.AssemblyInfo.cs
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.csproj.CoreCompileInputs.cache
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatin.E84DFA2D.Up2Date
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.dll
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\refint\AYMDatingCore.BLL.dll
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\AYMDatingCore.BLL.pdb
+D:\AYM Programming\Prog&Files\AYMDatingCore.PL\AYMDatingCore.BLL\obj\Release\net9.0\ref\AYMDatingCore.BLL.dll

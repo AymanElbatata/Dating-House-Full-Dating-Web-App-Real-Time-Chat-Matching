@@ -1,0 +1,523 @@
+﻿@model AYMDatingCore.PL.Models.UserHistoryTBL_VM
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+
+<style>
+    /* 🌹 Elegant Romantic Theme */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #ffe6f0, #ffd1dc, #fff0f5);
+        background-size: 400% 400%;
+        animation: softFlow 12s ease infinite;
+        color: #444;
+    }
+
+    @@keyframes softFlow {
+        0%
+
+    {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+
+    }
+
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 25px;
+        padding: 40px;
+        max-width: 950px;
+        width: 100%;
+        box-shadow: 0 10px 40px rgba(255, 105, 180, 0.2);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+        .profile-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 50px rgba(255, 182, 193, 0.4);
+        }
+
+    .text-rose {
+        color: #d63384;
+    }
+
+    h2 {
+        font-weight: 600;
+        color: #d63384;
+        text-shadow: 0 1px 2px rgba(255, 192, 203, 0.7);
+    }
+
+    .form-control2, .form-select2 {
+        border: 2px solid #ffc2d1;
+        border-radius: 10px;
+        padding: 10px 15px;
+        transition: 0.3s;
+        background: rgba(255, 255, 255, 0.9);
+    }
+
+        .form-control2:focus, .form-select2:focus {
+            border-color: #ff69b4;
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.3);
+            background: #fff;
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg, #ff69b4, #ff85c1);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 40px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        transition: 0.3s ease;
+    }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #ff85c1, #ffb6c1);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 18px rgba(255, 105, 180, 0.4);
+        }
+
+    .photo-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .photo-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        box-shadow: 0 6px 18px rgba(255, 105, 180, 0.3);
+        transition: 0.3s ease;
+    }
+
+        .photo-card:hover {
+            transform: scale(1.04);
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .photo-card:hover img {
+            transform: scale(1.05);
+        }
+
+    .delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(255, 255, 255, 0.95);
+        border: none;
+        border-radius: 50%;
+        color: #ff1493;
+        font-size: 18px;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        line-height: 22px;
+        text-align: center;
+        transition: 0.3s ease;
+    }
+
+        .delete-btn:hover {
+            background: #ff1493;
+            color: #fff;
+        }
+
+    .btn-outline-primary {
+        border-color: #ffb6c1;
+        color: #d63384;
+        border-radius: 50px;
+        transition: 0.3s ease;
+    }
+
+        .btn-outline-primary:hover {
+            background: #d63384;
+            color: white;
+        }
+
+    small.text-muted {
+        font-style: italic;
+        color: #999;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    /* Subtle floating animation */
+    .floating {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0%
+
+    {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+
+    }
+</style>
+
+
+<div class="profile-container">
+    <div class="profile-card">
+        <h2 class="text-center text-rose mb-4">💖 Edit My Profile 💖</h2>
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <form id="EditProfileForm" asp-action="EditProfile" asp-controller="User" method="post">
+            <!-- ✅ Main Profile Photo -->
+            @Html.AntiForgeryToken()
+
+            <div class="text-center mb-4">
+                @if (string.IsNullOrEmpty(@Model.MainImageUrl))
+                    Model.MainImageUrl = "blankprofile973460.png";
+
+                <img id="photo_1" src="~/ImageUsers/@Model.MainImageUrl" class="rounded-circle border border-3 border-pink" width="150" height="150" />
+                <br />
+                <label class="btn btn-light mt-2 border border-pink">
+                    Change Main Photo
+                    <input type="file" id="file1" accept="image/*" class="d-none" onchange="uploadImage(this, 1, '@Model.MainImageUrl')" />
+                </label>
+            </div>
+
+            <!-- ✅ Profile Info -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label>Age From</label>
+                    <input asp-for="SearchAgeFrom" type="number" class="form-control form-control2" min="18" max="99" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Age To</label>
+                    <input asp-for="SearchAgeTo" type="number" class="form-control form-control2" min="18" max="99" required />
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MaritalStatusId" class="form-label">Marital Status</label>
+                    <select asp-for="MaritalStatusId" id="maritalStatusId" asp-items="Model.MaritalStatusOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Status</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="EducationId" class="form-label">Education</label>
+                    <select asp-for="EducationId" id="educationId" asp-items="Model.EducationOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Education</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ProfessionId" class="form-label">Profession</label>
+                    <select asp-for="ProfessionId" id="professionId" asp-items="Model.ProfessionOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Profession</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LanguageId" class="form-label">Language</label>
+                    <select asp-for="LanguageId" id="languageId" asp-items="Model.LanguageOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Language</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="PurposeId" class="form-label">Purpose</label>
+                    <select asp-for="PurposeId" id="purposeId" asp-items="Model.PurposeOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Purpose</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FinancialModeId" class="form-label">Financial Mode</label>
+                    <select asp-for="FinancialModeId" id="financialModeId" asp-items="Model.FinancialModeOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Mode</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="CountryId" class="form-label">Country</label>
+                    <select asp-for="CountryId" id="countryId" asp-items="Model.CountryOptions" class="form-select form-select2 select2" required>
+                        <option value="">Select Country</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>City</label>
+                    <input id="city" asp-for="City" class="form-control form-control2" maxlength="50" required />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                    <span id="cityError" class="text-danger"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label>Profile Heading</label>
+                    <input id="profileHeading" asp-for="ProfileHeading" class="form-control form-control2" maxlength="100" required />
+                    <span asp-validation-for="ProfileHeading" class="text-danger"></span>
+                    <span id="profileHeadingError" class="text-danger"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label>💖 About Me</label>
+                    <textarea id="aboutMe" asp-for="AboutYou" class="form-control form-control2" rows="3" maxlength="1000" required></textarea>
+                    <span asp-validation-for="AboutYou" class="text-danger"></span>
+                    <small id="aboutMeCount" class="text-muted">0/1000</small>
+                    <span id="aboutMeError" class="text-danger"></span>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label>🌹 My Partner Should Be</label>
+                    <textarea id="aboutPartner" asp-for="AboutPartner" class="form-control form-control2" rows="3" maxlength="1000" required></textarea>
+                    <span asp-validation-for="AboutPartner" class="text-danger"></span>
+                    <small id="aboutPartnerCount" class="text-muted">0/1000</small>
+                    <span id="aboutPartnerError" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ✅ My Photos -->
+            <h4 class="text-rose mt-4 mb-3">📸 My Photos</h4>
+            <div class="photo-grid">
+                @for (int i = 2; i <= 6; i++)
+                {
+                    var img = Model.UserImageTBL_VM?.ElementAtOrDefault(i - 2)?.ImageUrl ?? "blankprofile973460.png";
+                    if (string.IsNullOrEmpty(img))
+                        img = "blankprofile973460.png";
+
+                    var imgPath = Url.Content($"~/ImageUsers/{img}");
+
+                    <div class="photo-card">
+                        <img id="photo_@i" src="@imgPath" alt="Photo @i" />
+                        <button type="button" class="delete-btn" onclick="deletePhoto('@img', @i)">&times;</button>
+                        <input type="file" id="file_@i" accept="image/*" class="d-none" onchange="uploadImage(this, @i, '@img')" />
+                        <button type="button" class="btn btn-outline-primary w-100 mt-2" onclick="document.getElementById('file_@i').click()">Upload</button>
+                    </div>
+                }
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn-save">💾 Save Profile</button>
+            </div>
+
+            <div class="text-center mt-5 py-2">
+                <a href="javascript:void(0)"
+                   class="text-danger fw-semibold"
+                   onclick="confirmDeleteAccount()">
+                    🗑️ Delete My Account
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+<script>
+    $(document).ready(function () {
+        /* ===================================================
+           🎓 Initialize Select2 Dropdowns
+        =================================================== */
+        const selectFields = [
+            { id: '#educationId', placeholder: 'Select Education' },
+            { id: '#professionId', placeholder: 'Select Profession' },
+            { id: '#maritalStatusId', placeholder: 'Select Status' },
+            { id: '#languageId', placeholder: 'Select Language' },
+            { id: '#purposeId', placeholder: 'Select Purpose' },
+            { id: '#financialModeId', placeholder: 'Select Financial Mode' },
+            { id: '#countryId', placeholder: 'Select Country' }
+        ];
+
+        selectFields.forEach(({ id, placeholder }) => {
+            $(id).select2({
+                placeholder,
+                allowClear: true,
+                width: '100%'
+            });
+        });
+
+        /* ===================================================
+           🧠 Form Validation Before Submit
+        =================================================== */
+        $('#EditProfileForm').on('submit', function (e) {
+            debugger;
+            let isValid = true;
+            $('.text-danger').text(''); // Clear previous error messages
+
+            const requiredFields = [
+                'profileHeading',
+                'city',
+                'aboutMe',
+                'aboutPartner',
+                'educationId',
+                'professionId',
+                'maritalStatusId',
+                'languageId',
+                'purposeId',
+                'financialModeId',
+                'countryId'
+            ];
+
+            // Validate empty fields
+            requiredFields.forEach(field => {
+                const value = $(`#${field}`).val()?.trim();
+                if (!value)
+                {
+                    isValid = false;
+                    $(`#${field+"Error"}`).text('Required');
+                }
+            });
+
+
+            // Character limit check
+            const aboutMeLen = $('#aboutMe').val().length;
+            const aboutPartnerLen = $('#aboutPartner').val().length;
+            if (aboutMeLen > 1000) {
+                alert('⚠️ About Me section must be under 1000 characters.');
+                $('#aboutMe').val() = $('#aboutMe').val().substring(0, 1000);
+                e.preventDefault();
+                return false;
+            }
+            if (aboutPartnerLen > 1000) {
+                alert('⚠️ About Partner section must be under 1000 characters.');
+                $('#aboutPartner').val() = $('#aboutPartner').val().substring(0, 1000);
+                e.preventDefault();
+                return false;
+            }
+
+            if (!isValid) e.preventDefault();
+        });
+
+        /* ===================================================
+           💖 Live Character Counter (1000 max)
+        =================================================== */
+        function setupCharLimit(fieldId, counterId, maxLength = 1000) {
+            const $field = $(`#${fieldId}`);
+            const $counter = $(`#${counterId}`);
+
+            $field.on('input paste', function () {
+                let text = $field.val();
+
+                // Enforce limit
+                if (text.length > maxLength) {
+                    $field.val(text.substring(0, maxLength));
+                    alert('⚠️ Maximum 1000 characters allowed.');
+                }
+
+                // Update counter display
+                const current = $field.val().length;
+                $counter.text(`${current} / ${maxLength}`)
+                        .css('color', current > 900 ? '#ff1493' : '#666');
+            });
+        }
+
+        setupCharLimit('aboutMe', 'aboutMeCount');
+        setupCharLimit('aboutPartner', 'aboutPartnerCount');
+    });
+
+    /* ===================================================
+       🖼️ Image Upload, Delete & Validation
+    =================================================== */
+    async function uploadImage(fileInput, number, oldImage) {
+        const file = fileInput.files[0];
+        if (!file || !validateImageSize(file)) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("number", number);
+        formData.append("oldImage", oldImage || "");
+
+        try {
+            const response = await fetch('@Url.Action("UploadImage", "User")', {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                document.querySelector(`#photo_${number}`).src = "../ImageUsers/" + result.imageUrl;
+            } else {
+                alert("❌ Upload failed: " + (result.message || "Unknown error"));
+            }
+        } catch (error) {
+            console.error(error);
+            alert("❌ Upload failed. Please try again.");
+        }
+    }
+
+    async function deletePhoto(imageUrl, number) {
+        if (!confirm("Are you sure you want to delete this photo? 💔")) return;
+
+        try {
+            const formData = new FormData();
+            formData.append("imageUrl", imageUrl);
+            formData.append("number", number);
+
+            const response = await fetch('@Url.Action("DeleteImage", "User")', {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                document.querySelector(`#photo_${number}`).src = "../ImageUsers/blankprofile973460.png";
+            } else {
+                alert("❌ Deletion failed: " + (result.message || "Unknown error"));
+            }
+        } catch (error) {
+            console.error(error);
+            alert("❌ Could not delete photo.");
+        }
+    }
+
+    function validateImageSize(file) {
+        const maxSize = 1 * 1024 * 1024; // 1 MB
+        if (file.size > maxSize) {
+            alert("❌ File too large! Please upload an image smaller than 1 MB.");
+            return false;
+        }
+        return true;
+    }
+</script>
+<script>
+    function confirmDeleteAccount() {
+        const confirmDelete = confirm(
+            "⚠️ Are you sure you want to delete your account?\n\n" +
+            "This action is permanent and all your data will be removed 💔"
+        );
+
+        if (confirmDelete) {
+            window.location.href = '@Url.Action("DeleteUser", "User", new { UserName = Model.AppUser.UserName })';
+        }
+    }
+</script>
+}

@@ -1,0 +1,19 @@
+﻿@model AYMDatingCore.PL.Models.UserHistoryTBL_VM
+
+@{
+    ViewData["Title"] = "Main User Profile";
+    string UserName = string.Empty;
+    if (UnitOfWork.SignInManager.IsSignedIn(User))
+    {
+        if (User.IsInRole("User"))
+        {
+            UserName = User.Identity.Name;
+        }
+    }
+
+ }
+
+
+
+ <partial name="_UserProfilePagePartial" model="@Model" />
+

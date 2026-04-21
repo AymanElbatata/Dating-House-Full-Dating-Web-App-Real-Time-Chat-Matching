@@ -1,0 +1,141 @@
+﻿@model IEnumerable<EmailTBL_VM>
+
+@{
+    ViewData["Title"] = "User Emails";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #ffe6f0, #fff);
+    }
+
+    .emails-wrapper {
+        background: #fff;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 12px 35px rgba(214, 51, 132, 0.15);
+        max-height: 75vh;
+        overflow-y: auto;
+    }
+
+    .email-item {
+        border: 1px solid #f3d1e2;
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 18px;
+        transition: all 0.3s ease;
+    }
+
+        .email-item:hover {
+            background: #fff4fa;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(214, 51, 132, 0.15);
+        }
+
+    .email-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .email-from-to {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .email-subject {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #d63384;
+        margin-bottom: 8px;
+    }
+
+    .email-body {
+        background: #fff;
+        border: 1px dashed #f3c0d8;
+        border-radius: 14px;
+        padding: 14px;
+        font-size: 0.95rem;
+        color: #333;
+        line-height: 1.6;
+        white-space: pre-wrap;
+    }
+
+    .email-icon {
+        font-size: 28px;
+    }
+
+    /* Scrollbar */
+    .emails-wrapper::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .emails-wrapper::-webkit-scrollbar-thumb {
+        background: #f3a6c8;
+        border-radius: 10px;
+    }
+
+    .email-date {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        justify-content: flex-end;
+    }
+</style>
+
+<h2 class="text-center fw-bold mb-3 text-pink">📧 User Emails</h2>
+<p class="text-center text-muted mb-4">
+    View all emails sent to users (Read only)
+</p>
+
+<div class="emails-wrapper">
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted py-5">
+            📭 No emails found
+        </div>
+    }
+    else
+    {
+        @foreach (var email in Model)
+        {
+            <div class="email-item">
+
+                <div class="email-header">
+                    <div class="email-icon">✉️</div>
+
+                    <div class="email-from-to text-end">
+                        <div><strong>From:</strong> @email.From</div>
+                        <div><strong>To:</strong> @email.To</div>
+
+                        <div class="email-date">
+                            🕒 @email.CreationDate?.ToString("dd MMM yyyy • HH:mm")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="email-subject">
+                    @email.Subject
+                </div>
+
+                @* 
+    <div class="email-body">
+        @email.Body
+    </div> *@
+
+            </div>
+        }
+    }
+
+</div>
+
+<div class="text-center mt-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-soft">
+        ⬅ Back to Admin Panel
+    </a>
+</div>

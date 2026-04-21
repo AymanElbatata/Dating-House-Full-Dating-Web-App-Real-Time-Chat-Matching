@@ -1,0 +1,180 @@
+﻿@model IEnumerable<UserAddressListTBL_VM>
+
+@{
+    ViewData["Title"] = "User IP Activity";
+    var user = Model.FirstOrDefault()?.AppUser;
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #fde7f3, #ffffff);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .ip-wrapper {
+        padding: 50px 15px;
+    }
+
+    /* =====================
+           User Header
+        ====================== */
+    .user-header {
+        background: #fff;
+        border-radius: 22px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(194, 24, 91, 0.15);
+        margin-bottom: 30px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff5fa2, #ff85c2);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .user-info h4 {
+        margin: 0;
+        color: #c2185b;
+        font-weight: 700;
+    }
+
+    .user-info small {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* =====================
+           Table
+        ====================== */
+    .table-wrapper {
+        background: #fff;
+        border-radius: 22px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(194, 24, 91, 0.15);
+    }
+
+    table {
+        margin-bottom: 0;
+    }
+
+    thead {
+        background: #fde7f3;
+    }
+
+        thead th {
+            color: #c2185b;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+        }
+
+    tbody td {
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+
+    tbody tr {
+        transition: background 0.2s ease;
+    }
+
+        tbody tr:hover {
+            background: #fff0f7;
+        }
+
+    .badge-soft {
+        background: #fde7f3;
+        color: #c2185b;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+</style>
+
+<div class="ip-wrapper container">
+
+    <h2 class="text-center fw-bold mb-4 text-pink">User IP Activity</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            📭 No IP activity recorded for this user.
+        </div>
+    }
+    else
+    {
+        <!-- ================= User Info ================= -->
+        <div class="user-header">
+            <div class="user-avatar">
+                @user?.UserName?.Substring(0, 1).ToUpper()
+            </div>
+
+            <div class="user-info">
+                <h4>@user?.UserName</h4>
+                <small>@user?.Email</small>
+            </div>
+        </div>
+
+        <!-- ================= IP Table ================= -->
+        <div class="table-wrapper">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>IP Address</th>
+                        <th>Host</th>
+                        <th>Browser</th>
+                        <th>Operation</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@item.IpAddress</td>
+                            <td>@item.HostName</td>
+                            <td>@item.Browser</td>
+                            <td>
+                                <span class="badge-soft">
+                                    @item.OperationType
+                                </span>
+                            </td>
+                            <td>
+                                @item.CreationDate?.ToString("dd MMM yyyy • HH:mm")
+                            </td>
+                        </tr>
+                        i++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <div class="text-center mt-4">
+        <a asp-action="Index" asp-controller="Admin" class="btn btn-soft">
+            ⬅ Back to Admin Panel
+        </a>
+    </div>
+
+</div>

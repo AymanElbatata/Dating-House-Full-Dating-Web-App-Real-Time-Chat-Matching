@@ -1,0 +1,152 @@
+﻿@model List<AdminPanelTBL_VM>
+
+@{
+    ViewData["Title"] = "Operation Panel";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #fdf0f4, #ffffff);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .panel-wrapper {
+        padding: 30px 15px;
+        max-width: 800px;
+        margin: auto;
+    }
+
+    h2 {
+        text-align: center;
+        color: #c2185b;
+        font-weight: 700;
+        margin-bottom: 25px;
+        font-size: 1.8rem; /* أصغر من قبل */
+    }
+
+    .panel-card {
+        background: #fff;
+        border-radius: 15px; /* أصغر قليلاً */
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 6px 20px rgba(194,24,91,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+        .panel-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(194,24,91,0.12);
+        }
+
+    .panel-name {
+        font-weight: 600;
+        color: #333;
+        font-size: 1rem; /* أصغر */
+    }
+
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 40px; /* أصغر */
+        height: 22px; /* أصغر */
+    }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px; /* أصغر */
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #c2185b;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(18px); /* يتناسب مع الحجم الجديد */
+        }
+
+    .status-label {
+        font-size: 0.85rem; /* أصغر */
+        font-weight: 600;
+        margin-left: 8px;
+        color: #666;
+    }
+</style>
+
+<div class="panel-wrapper">
+    <h2>Operation Panel</h2>
+
+    @foreach (var panel in Model)
+    {
+        <div class="panel-card">
+            <div class="panel-name">@panel.PanelName</div>
+
+            <div class="d-flex align-items-center">
+                <label class="toggle-switch">
+                    <input type="checkbox" class="activation-toggle" data-id="@panel.ID" @(panel.Activation ? "checked" : "") />
+                    <span class="slider"></span>
+                </label>
+                <span class="status-label">@((panel.Activation) ? "Active" : "Inactive")</span>
+            </div>
+        </div>
+    }
+</div>
+<div class="text-center mt-4">
+    <a asp-action="Index" asp-controller="Admin" class="btn btn-soft">
+        ⬅ Back to Admin Panel
+    </a>
+</div>
+
+<script>
+    $(function () {
+        $('.activation-toggle').on('change', function () {
+            var checkbox = $(this);
+            var panelId = checkbox.data('id');
+            var isActive = checkbox.is(':checked');
+
+            // Update label
+            checkbox.closest('.d-flex').find('.status-label').text(isActive ? 'Active' : 'Inactive');
+
+            // AJAX call
+            $.ajax({
+                url: '@Url.Action("TogglePanelActivation", "Admin")',
+                method: 'POST',
+                data: { id: panelId, activation: isActive },
+                success: function (res) {
+                    // Optional: show toast / message
+                    console.log('Panel updated successfully');
+                },
+                error: function () {
+                    alert('Error updating panel status.');
+                    checkbox.prop('checked', !isActive); // revert
+                    checkbox.closest('.d-flex').find('.status-label').text(!isActive ? 'Active' : 'Inactive');
+                }
+            });
+        });
+    });
+</script>

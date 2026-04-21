@@ -1,0 +1,104 @@
+
+.back-to-top {
+    /*    background-color: #ff1493;
+*/ background-color: #e60073;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 14px;
+}
+body.romantic-bg {
+    background: linear-gradient(135deg, #ffe6eb 0%, #fff5f8 100%);
+    font-family: 'Poppins', sans-serif;
+    color: #b3004b;
+}
+
+.romantic-navbar {
+    background-color: #fff5f8 !important;
+    border-bottom: 1px solid #ffd6e0;
+}
+
+.navbar-brand .brand-text {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.8rem;
+    color: #e60073;
+    text-shadow: 0 0 5px #ffcce0;
+}
+
+.nav-link {
+    color: #e60073 !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+    .nav-link:hover {
+        color: #ff4d94 !important;
+    }
+
+.btn-love {
+    background: #e60073;
+    color: white !important;
+    border-radius: 25px;
+    padding: 6px 16px;
+    transition: all 0.3s ease;
+}
+
+    .btn-love:hover {
+        background: #ff4d94;
+        transform: scale(1.05);
+    }
+
+.romantic-footer {
+    background: #fff0f5;
+    color: #b3004b;
+    font-size: 0.9rem;
+    border-top: 1px solid #ffd6e0;
+}
+    .romantic-footer a {
+        color: #b3004b;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
+        .romantic-footer a:hover {
+            color: #ff4d88;
+            text-decoration: underline;
+        }
+
+        .romantic-footer a:visited {
+            color: #8a0038;
+        }
+
+
+.romantic-search {
+    background: linear-gradient(90deg, #ffb6c1, #ff69b4);
+    padding: 12px;
+    border-radius: 15px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+    .romantic-search select,
+    .romantic-search input {
+        border: 1px solid #ff69b4;
+        border-radius: 8px;
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+.btn-romantic {
+    background-color: #ff1493;
+    color: white;
+    border-radius: 10px;
+    padding: 6px 16px;
+    transition: all 0.3s ease;
+}
+
+    .btn-romantic:hover {
+        background-color: #e60073;
+        transform: scale(1.05);
+    }

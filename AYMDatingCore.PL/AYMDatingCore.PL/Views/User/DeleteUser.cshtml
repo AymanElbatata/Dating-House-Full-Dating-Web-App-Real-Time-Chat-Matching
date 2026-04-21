@@ -1,0 +1,158 @@
+﻿@model bool
+@{
+    ViewData["Title"] = "Delete Account";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #f8f9fa, #f1f3f5);
+        font-family: 'Poppins', sans-serif;
+        color: #444;
+    }
+
+    .delete-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .delete-box {
+        background: #fff;
+        border-radius: 24px;
+        padding: 45px 40px;
+        max-width: 520px;
+        width: 100%;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        animation: fadeUp .6s ease;
+    }
+
+    @@keyframes fadeUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .emoji {
+        font-size: 52px;
+        margin-bottom: 15px;
+        opacity: .85;
+    }
+
+    h2 {
+        font-weight: 600;
+        color: #d63384;
+        margin-bottom: 12px;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        color: #777;
+        margin-bottom: 25px;
+    }
+
+    .message {
+        background: #fdf2f8;
+        border-radius: 14px;
+        padding: 18px;
+        font-size: .95rem;
+        color: #555;
+        margin-bottom: 30px;
+        line-height: 1.7;
+    }
+
+        .message strong {
+            color: #d63384;
+        }
+
+    .btn-delete {
+        width: 100%;
+        border: none;
+        border-radius: 50px;
+        padding: 14px;
+        font-size: 1.05rem;
+        background: linear-gradient(135deg, #ff6b9a, #ff8fc1);
+        color: #fff;
+        box-shadow: 0 8px 18px rgba(214, 51, 132, 0.25);
+        transition: .3s ease;
+    }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(214, 51, 132, 0.35);
+        }
+
+    .btn-back {
+        display: inline-block;
+        margin-top: 18px;
+        color: #888;
+        text-decoration: none;
+        font-size: .95rem;
+        transition: .2s;
+    }
+
+        .btn-back:hover {
+            color: #d63384;
+            text-decoration: underline;
+        }
+
+    .denied {
+        color: #dc3545;
+        font-weight: 500;
+    }
+</style>
+
+<div class="delete-wrapper">
+    <div class="delete-box">
+
+        @if (!Model)
+        {
+            <div class="denied">
+                🚫 You don’t have permission to delete this account.
+            </div>
+        }
+        else
+        {
+            <div class="emoji">💔</div>
+
+            <h2>We’ll miss you</h2>
+
+            <div class="subtitle">
+                This is a permanent goodbye
+            </div>
+
+            <div class="message">
+                Deleting your account will remove <strong>all your data</strong>,
+                photos, and conversations forever.<br />
+                This action cannot be undone.
+            </div>
+
+            <form asp-action="DeleteUser"
+                  asp-controller="User"
+                  method="post">
+                @Html.AntiForgeryToken()
+
+                <button type="submit" class="btn-delete">
+                    Delete my account permanently
+                </button>
+            </form>
+
+            <a asp-action="EditProfile"
+               asp-controller="User"
+               class="btn-back">
+                I changed my mind
+            </a>
+        }
+    </div>
+</div>
