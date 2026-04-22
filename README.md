@@ -1,64 +1,68 @@
 # Dating House – Full Dating Web App Real-Time Chat & Matching
 
 💖 Dating House
-Full Dating Web App (Source Code + Database)
-<p align="center"> <b>Real-Time Chat • Smart Matching • Scalable Architecture</b> </p> <p align="center"> <a href="https://datinghouse.runasp.net">🌐 Live Demo</a> • <a href="https://payhip.com/b/pv81u">🛒 Buy Now</a> </p>
-🚀 Overview
+Modern Dating Web Application (Full Source Code + Database)
+<p align="center"> <b>Real-Time Chat • Smart Matching • Scalable Architecture</b> </p> <p align="center"> <a href="https://datinghouse.runasp.net">🌐 Live Demo</a> &nbsp;•&nbsp; <a href="https://payhip.com/b/pv81u">🛒 Purchase</a> </p>
+📌 Overview
 
 Dating House is a production-ready dating platform built with modern Microsoft technologies.
-
-It is designed to help you launch quickly, scale, and monetize efficiently without spending months in development.
+It provides a complete solution for launching a scalable and monetizable dating application.
 
 ✨ Features
-🎨 Modern UI & Responsive Design
-Works on Mobile / Tablet / Desktop
-Clean, modern user interface
-Optimized for engagement
-💘 Smart Matching System
-Intelligent user matching
-Fast filtering system
-Quick homepage search
-💬 Real-Time Communication
-Instant messaging
+🎨 User Experience
+Fully responsive (Mobile / Tablet / Desktop)
+Clean and modern UI
+Optimized for engagement and usability
+💘 Matching System
+Smart user matching
+Fast filtering and search
+Quick access from homepage
+💬 Communication
+Real-time messaging
 Notifications system
 Voice messages
 Voice calls
-🧩 Dynamic Frontend
+🧩 Customization
 Editable UI components
-Fully customizable layout
-🛠️ Admin Dashboard
-Manage users 
+Flexible layout and structure
+🛠️ Admin Panel
+Manage users بسهولة
 Monitor platform activity
-Simple and intuitive controls
+Simple dashboard interface
 ⚙️ Tech Stack
-Backend      : .NET Core 9
-Database     : SQL Server
-Architecture : Clean Architecture
-Deployment   : IIS / Linux / Cloud
-📦 What You Get
-✔️ Full Source Code
-✔️ Ready-to-Run Version
-✔️ Database Included
-✔️ Full Ownership
-💰 Monetization
-
-Start earning immediately with:
-
+Category	Technology
+🧠 Backend	.NET Core 9
+🗄️ Database	SQL Server
+🏗️ Architecture	Clean Architecture
+☁️ Deployment	IIS / Linux / Cloud
+📦 Included
+✔️ Full source code
+✔️ Ready-to-run version
+✔️ Database
+✔️ Full ownership
+💰 Monetization Options
 💎 Premium subscriptions
-📢 Ads integration
-🚀 Boosted profiles
-📸 Preview
+📢 Advertisements
+🚀 Featured profiles & boosts
+🌐 Live Demo
 
+https://datinghouse.runasp.net
 
-🎯 Why This Project?
-⏱️ Save months of work
-🚀 Launch instantly
-🧱 Built for scalability
-💼 Production-ready
+🛒 Purchase
+
+https://payhip.com/b/pv81u
+
+🎯 Why Choose This Project?
+⏱️ Save months of development
+🚀 Launch quickly
+🧱 Built with scalable architecture
+🌍 Ready for production use
 📩 Contact
 
 For customization or business inquiries, feel free to reach out.
 
-⭐ Support
-
-If you like this project, consider giving it a star ⭐ on GitHub!
+🔥 Why this version works:
+Clean section hierarchy
+Icons used professionally (not spammy)
+Balanced whitespace (easy to read)
+Looks like a real SaaS repo, not a sales page
