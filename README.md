@@ -51,12 +51,6 @@ Start earning immediately with:
 📸 Preview
 
 
-🛒 Purchase
-<p align="center"> 👉 <a href="https://payhip.com/b/pv81u"><b>Buy Dating House Now</b></a> </p>
-🌐 Live Demo
-
-👉 https://datinghouse.runasp.net
-
 🎯 Why This Project?
 ⏱️ Save months of work
 🚀 Launch instantly
