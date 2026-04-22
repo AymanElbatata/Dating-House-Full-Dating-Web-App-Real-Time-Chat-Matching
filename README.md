@@ -9,32 +9,38 @@ Dating House is a production-ready dating platform built with modern Microsoft t
 It provides a complete solution for launching a scalable and monetizable dating application.
 
 ✨ Features
+
 🎨 User Experience
 Fully responsive (Mobile / Tablet / Desktop)
 Clean and modern UI
 Optimized for engagement and usability
+
 💘 Matching System
 Smart user matching
 Fast filtering and search
 Quick access from homepage
+
 💬 Communication
 Real-time messaging
 Notifications system
 Voice messages
 Voice calls
+
 🧩 Customization
 Editable UI components
 Flexible layout and structure
 🛠️ Admin Panel
-Manage users بسهولة
+Manage users 
 Monitor platform activity
 Simple dashboard interface
+
 ⚙️ Tech Stack
 Category	Technology
 🧠 Backend	.NET Core 9
 🗄️ Database	SQL Server
 🏗️ Architecture	Clean Architecture
 ☁️ Deployment	IIS / Linux / Cloud
+
 📦 Included
 ✔️ Full source code
 ✔️ Ready-to-run version
@@ -44,13 +50,7 @@ Category	Technology
 💎 Premium subscriptions
 📢 Advertisements
 🚀 Featured profiles & boosts
-🌐 Live Demo
 
-https://datinghouse.runasp.net
-
-🛒 Purchase
-
-https://payhip.com/b/pv81u
 
 🎯 Why Choose This Project?
 ⏱️ Save months of development
