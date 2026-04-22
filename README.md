@@ -50,11 +50,7 @@ Start earning immediately with:
 🚀 Boosted profiles
 📸 Preview
 
-Add screenshots here for better conversion
 
-/screenshots/home.png
-/screenshots/chat.png
-/screenshots/profile.png
 🛒 Purchase
 <p align="center"> 👉 <a href="https://payhip.com/b/pv81u"><b>Buy Dating House Now</b></a> </p>
 🌐 Live Demo
