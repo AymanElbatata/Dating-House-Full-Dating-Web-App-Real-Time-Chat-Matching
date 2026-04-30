@@ -8,6 +8,29 @@ Modern Dating Web Application (Full Source Code + Database)
 Dating House is a production-ready dating platform built with modern Microsoft technologies.
 It provides a complete solution for launching a scalable and monetizable dating application.
 
+## 📸 Preview
+
+<p align="center">
+  <img src="/Screenshots/001.jpg" width="45%" />
+  <img src="/Screenshots/002.jpg" width="45%" />
+</p>
+
+<p align="center">
+  <img src="/Screenshots/003.jpg" width="45%" />
+  <img src="/Screenshots/004.jpg" width="45%" />
+</p>
+
+<p align="center">
+  <img src="/Screenshots/005.jpg" width="45%" />
+  <img src="/Screenshots/006.jpg" width="45%" />
+</p>
+
+<p align="center">
+  <img src="/Screenshots/007.jpg" width="45%" />
+  <img src="/Screenshots/008.jpg" width="45%" />
+</p>
+
+
 ✨ Features
 
 🎨 User Experience
@@ -58,27 +81,6 @@ Category	Technology
 🧱 Built with scalable architecture
 🌍 Ready for production use
 
-## 📸 Preview
-
-<p align="center">
-  <img src="/Screenshots/001.jpg" width="45%" />
-  <img src="/Screenshots/002.jpg" width="45%" />
-</p>
-
-<p align="center">
-  <img src="/Screenshots/003.jpg" width="45%" />
-  <img src="/Screenshots/004.jpg" width="45%" />
-</p>
-
-<p align="center">
-  <img src="/Screenshots/005.jpg" width="45%" />
-  <img src="/Screenshots/006.jpg" width="45%" />
-</p>
-
-<p align="center">
-  <img src="/Screenshots/007.jpg" width="45%" />
-  <img src="/Screenshots/008.jpg" width="45%" />
-</p>
 
 📩 Contact
 For customization or business inquiries, feel free to reach out.
