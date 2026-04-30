@@ -60,3 +60,6 @@ Category	Technology
 
 📩 Contact
 For customization or business inquiries, feel free to reach out.
+
+----------
+If you like this project, please give it a star ⭐
