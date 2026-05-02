@@ -2,7 +2,7 @@
 
 💖 Dating House
 Modern Dating Web Application (Full Source Code + Database)
-<p align="center"> <b>Real-Time Chat • Smart Matching • Scalable Architecture</b> </p> <p align="center"> <a href="https://datinghouse.runasp.net">🌐 Live Demo</a> &nbsp;•&nbsp; <a href="https://payhip.com/b/pv81u">🛒 Purchase</a> </p>
+<p align="center"> <b>Real-Time Chat • Smart Matching • Scalable Architecture</b> </p> <p align="center"> <a  target="_blank" href="https://datinghouse.runasp.net">🌐 Live Demo</a> &nbsp;•&nbsp; <a  target="_blank" href="https://payhip.com/b/pv81u">🛒 Purchase</a> </p>
 📌 Overview
 
 Dating House is a production-ready dating platform built with modern Microsoft technologies.
