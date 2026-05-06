@@ -1,4 +1,4 @@
-# Dating House – Full Dating Web App Real-Time Chat & Matching
+# Dating House – Full Dating Real-Time Chat & Matching Web App (Source Code + Database)
 
 💖 Dating House
 Modern Dating Web Application (Full Source Code + Database)
