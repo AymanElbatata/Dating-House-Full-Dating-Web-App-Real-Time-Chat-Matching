@@ -285,7 +285,7 @@ namespace AYMDatingCore.PL.Controllers
                 {
                     return Json(new { success = false, error = "Email is already registered for another user" });
                 }
-                else if (anotherUserWithSameEmail?.UserName != null && user?.UserName == anotherUserWithSameEmail?.UserName)
+                else if (anotherUserWithSameEmail?.UserName != null && user?.UserName == anotherUserWithSameEmail?.UserName && anotherUserWithSameEmail.Id != id)
                 {
                     return Json(new { success = false, error = "Username is already registered for another user" });
                 }
