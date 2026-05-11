@@ -48,6 +48,7 @@ Real-time messaging
 Notifications system
 Voice messages
 Voice calls
+Video calls
 
 🧩 Customization
 Editable UI components
