@@ -123,6 +123,7 @@ namespace AYMDatingCore.PL.Controllers
             return View(new UserHistoryTBL_VM());
         }
 
+        #region General Views
 
         public IActionResult PrivacyNotice()
         {
@@ -203,7 +204,10 @@ namespace AYMDatingCore.PL.Controllers
                 return RedirectToAction("ServiceIsDown", "Home");
             }
         }
+        #endregion
 
+
+        #region Helper Methods
 
         private List<UserHistoryTBL_VM> GetAllUsersOrFiltered(UserMainSearchDTO model)
         {
@@ -258,7 +262,7 @@ namespace AYMDatingCore.PL.Controllers
         {
             return await unitOfWork.UserManager.FindByNameAsync(UserName);
         }
-
+        #endregion
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

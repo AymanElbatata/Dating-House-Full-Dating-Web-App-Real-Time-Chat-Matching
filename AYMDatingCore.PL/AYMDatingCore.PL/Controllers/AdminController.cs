@@ -280,12 +280,12 @@ namespace AYMDatingCore.PL.Controllers
                 {
                     return Json(new { success = false, error = "User not found" });
                 }
-
-                if (unitOfWork.UserManager.FindByEmailAsync(model.Email)?.Result?.Id != id)
+                var anotherUserWithSameEmail = await unitOfWork.UserManager.FindByEmailAsync(model.Email);
+                if (anotherUserWithSameEmail != null && anotherUserWithSameEmail.Id != id)
                 {
                     return Json(new { success = false, error = "Email is already registered for another user" });
                 }
-                else if (unitOfWork.UserManager.FindByNameAsync(model.UserName)?.Result?.Id != id)
+                else if (anotherUserWithSameEmail?.UserName != null && user?.UserName == anotherUserWithSameEmail?.UserName)
                 {
                     return Json(new { success = false, error = "Username is already registered for another user" });
                 }

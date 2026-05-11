@@ -53,7 +53,7 @@ namespace AYMDatingCore.PL
             });
 
             //services.AddSingleton 
-            builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IMySPECIALGUID, MySPECIALGUID>();

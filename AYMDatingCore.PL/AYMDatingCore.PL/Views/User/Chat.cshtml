@@ -3,9 +3,9 @@
 @{
     ViewData["Title"] = "Chat";
 
-         bool IsThereBlocking = false;
-         string GroupName = Model.GroupName;
-         List<UserMessage_VM> PreviousMessage = Model.UserMessage_VM;
+    bool IsThereBlocking = false;
+    string GroupName = Model.GroupName;
+    List<UserMessage_VM> PreviousMessage = Model.UserMessage_VM;
 }
 
 <style>
@@ -82,6 +82,22 @@
             background: #ffd1dc;
         }
 
+        /* System message style for call notifications */
+        .message-item.system-call {
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            text-align: center;
+            font-style: italic;
+        }
+
+            .message-item.system-call .message-meta {
+                color: #4c1d95;
+            }
+
+            .message-item.system-call .message-text {
+                color: #3730a3;
+                font-size: 0.9rem;
+            }
+
     .message-meta {
         font-size: 0.8rem;
         color: #777;
@@ -145,7 +161,6 @@
         transition: all 0.3s ease;
     }
 
-    /* 🎤 Mic (Green) */
     .mic-btn {
         background-color: #25D366;
         color: #fff;
@@ -156,7 +171,6 @@
             transform: scale(1.1);
         }
 
-    /* 🛑 Stop (Red) */
     .stop-btn {
         background-color: #FF3B30;
         color: #fff;
@@ -167,7 +181,6 @@
             transform: scale(1.1);
         }
 
-    /* 📁 File (Pink Variants) */
     .file-btn {
         background-color: #ffb6c1;
         color: #fff;
@@ -184,7 +197,6 @@
             filter: brightness(1.1);
         }
 
-    /* 🎞 Dots Animation (Recording / Uploading) */
     .recording-dots {
         display: flex;
         align-items: center;
@@ -210,38 +222,247 @@
         }
 
     @@keyframes blink {
-        0%, 80%, 100%
+        0%, 80%, 100% {
+            opacity: 0.3;
+            transform: scale(0.8);
+        }
 
-    {
-        opacity: 0.3;
-        transform: scale(0.8);
+        40% {
+            opacity: 1;
+            transform: scale(1.3);
+        }
     }
 
-    40% {
+    /* Incoming Call Modal - Simple & Beautiful */
+    .incoming-call-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .incoming-call-modal {
+        background: white;
+        border-radius: 30px;
+        padding: 30px 40px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+        min-width: 320px;
+    }
+
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+    }
+
+    to {
         opacity: 1;
-        transform: scale(1.3);
     }
 
     }
 
-    /* 📱 Responsive Design */
-    @@media (max-width: 600px) {
-        .profile-card
+    @@keyframes slideUp {
+        from
 
     {
-        padding: 20px;
+        transform: translateY(50px);
+        opacity: 0;
     }
 
-    .voice-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 18px;
+    to {
+        transform: translateY(0);
+        opacity: 1;
     }
 
-    .chat-section {
-        max-height: 300px;
     }
 
+    .incoming-call-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+    }
+
+        .incoming-call-icon i {
+            font-size: 40px;
+            color: white;
+        }
+
+    .incoming-call-modal h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 24px;
+    }
+
+    .incoming-call-modal .caller-name {
+        color: #ff1493;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .incoming-call-modal .call-type {
+        color: #777;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .incoming-call-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .btn-accept-call {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-accept-call:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
+
+    .btn-reject-call {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .btn-reject-call:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+    /* Custom Alert Toast */
+    .custom-alert {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-size: 14px;
+        z-index: 10001;
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+        .custom-alert.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+    /* Video Call Styles */
+    .video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 9999;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .video-container.active {
+            display: flex;
+        }
+
+    .remote-video {
+        width: 80%;
+        height: 80%;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #000;
+    }
+
+    .local-video {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 200px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 10px;
+        border: 2px solid #ff69b4;
+        cursor: pointer;
+        z-index: 10000;
+    }
+
+    .video-controls {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 10000;
+    }
+
+    .video-control-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        font-size: 24px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-end-video {
+        background-color: #FF3B30;
+        color: white;
+    }
+
+    .btn-mute-video {
+        background-color: #4a76a8;
+        color: white;
+    }
+
+    .btn-toggle-video {
+        background-color: #28a745;
+        color: white;
     }
 
     .chat-file-preview {
@@ -298,7 +519,6 @@
             color: #777;
         }
 
-    /* 🖼 Image preview */
     .chat-image-preview img {
         max-width: 25%;
         max-height: 25%;
@@ -307,7 +527,6 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
 
-    /* 🎥 Video preview */
     .chat-video-preview video {
         max-width: 25%;
         max-height: 25%;
@@ -316,7 +535,6 @@
         box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     }
 
-    /* Profile image + online status */
     .profile-img-wrapper {
         position: relative;
         display: inline-block;
@@ -333,37 +551,58 @@
         box-shadow: 0 0 6px rgba(0,0,0,0.15);
     }
 
-        /* Online / Offline */
         .profile-status-dot.online {
-            background-color: #2ecc71; /* أخضر */
+            background-color: #2ecc71;
         }
 
         .profile-status-dot.offline {
-            background-color: #e74c3c; /* أحمر */
+            background-color: #e74c3c;
         }
+
+    @@media (max-width: 600px) {
+        .profile-card {
+            padding: 20px;
+        }
+
+        .voice-btn {
+            width: 48px;
+            height: 48px;
+            font-size: 18px;
+        }
+
+        .chat-section {
+            max-height: 300px;
+        }
+
+        .local-video {
+            width: 100px;
+            height: 75px;
+        }
+
+        .incoming-call-modal {
+            padding: 20px 25px;
+            min-width: 280px;
+        }
+    }
 </style>
 
 
 <div class="profile-chat-container">
     <div class="profile-card shadow-lg text-center">
-        <!-- Profile Header -->
         <div class="profile-header">
             @if (string.IsNullOrEmpty(Model.UserHistoryTBL_VM.MainImageUrl))
                 Model.UserHistoryTBL_VM.MainImageUrl = "blankprofile973460.png";
 
             <a asp-controller="Home" asp-action="UserProfile" asp-route-UserName="@Model.UserHistoryTBL_VM.AppUser.UserName">
-@*                 <img src="~/ImageUsers/@Model.UserHistoryTBL_VM.MainImageUrl" alt="Profile Image" class="profile-img" />
- *@                <div class="profile-img-wrapper">
+                <div class="profile-img-wrapper">
                     <img src="~/ImageUsers/@Model.UserHistoryTBL_VM.MainImageUrl"
                          alt="@Model.UserHistoryTBL_VM.AppUser.UserName"
                          class="profile-img" />
-
                     <span class="profile-status-dot @(Model.UserHistoryTBL_VM.AppUser.IsOnline ? "online" : "offline")"
                           title="@(Model.UserHistoryTBL_VM.AppUser.IsOnline ? "Online now" : "Offline")">
                     </span>
                 </div>
             </a>
-
 
             <h2 class="mt-3 text-rose">@Model.UserHistoryTBL_VM.AppUser?.UserName</h2>
             <p class="small text-muted">
@@ -372,18 +611,18 @@
             <p class="small text-muted">
                 🎯 Looking for a partner between: <strong>@Model.UserHistoryTBL_VM.SearchAgeFrom</strong> - <strong>@Model.UserHistoryTBL_VM.SearchAgeTo</strong>
             </p>
-
         </div>
 
-        <!-- Chat Section -->
         <div class="chat-section mt-4 text-start">
             <ul class="message-list" id="MessageListArea">
                 @if (PreviousMessage != null && PreviousMessage.Any())
                 {
                     foreach (var msg in PreviousMessage)
                     {
-                        <li class="message-item @(msg.SenderAppUser.UserName == User.Identity.Name ? "sent" : "received")">
-                            <p class="message-meta">@msg.CreationDate?.ToString("dd MMMM yyyy, hh:mm tt") • <strong>@msg.SenderAppUser.UserName</strong>
+                        string isSystemCall = msg.Message != null && (msg.Message.Contains("started a") || msg.Message.Contains("ended the")) ? "system-call" : "";
+                        <li class="message-item @(msg.SenderAppUser.UserName == User.Identity.Name ? "sent" : "received") @isSystemCall">
+                            <p class="message-meta">
+                                @msg.CreationDate?.ToString("dd MMMM yyyy, hh:mm tt") • <strong>@msg.SenderAppUser.UserName</strong>
                                 @if (msg.IsSeen)
                                 {
                                     <i class="fa-solid fa-check-double text-primary"></i>
@@ -401,7 +640,6 @@
                             {
                                 <audio controls style="width:100%;">
                                     <source src="~/AudioUsers/@msg.AudioDataUrl" type="audio/webm">
-                                    Your browser does not support audio playback.
                                 </audio>
                             }
                             else
@@ -424,7 +662,6 @@
                                         <div class="chat-video-preview">
                                             <video controls>
                                                 <source src="@filePath" type="video/@fileExtension.TrimStart('.')">
-                                                Your browser does not support video playback.
                                             </video>
                                         </div>
                                     }
@@ -452,7 +689,6 @@
             </ul>
         </div>
 
-        <!-- Message Input -->
         <div class="chat-input mt-3">
             @if (!Model.IsThereBlocking)
             {
@@ -462,13 +698,11 @@
                         <button id="startBtn" class="voice-btn mic-btn">
                             <i class="fa fa-microphone"></i>
                         </button>
-
                         <div id="recordingDots" class="recording-dots" style="display: none;">
                             <span class="dot"></span>
                             <span class="dot"></span>
                             <span class="dot"></span>
                         </div>
-
                         <button id="stopBtn" class="voice-btn stop-btn" disabled>
                             <i class="fa fa-paper-plane"></i>
                         </button>
@@ -476,45 +710,34 @@
                 </div>
                 <div class="file-upload-container mt-3">
                     <div class="file-controls d-flex align-items-center gap-2">
-                        <!-- Hidden file input -->
                         <input type="file" id="userFile" class="form-control-file" style="display: none;" />
-
-                        <!-- Choose File Button -->
                         <button id="chooseFileBtn" class="voice-btn file-btn" onclick="document.getElementById('userFile').click()">
                             <i class="fa fa-folder-open"></i>
                         </button>
-
-                        <!-- Upload Button -->
                         <button id="uploadBtn" class="voice-btn upload-btn" disabled>
                             <i class="fa fa-upload"></i>
                         </button>
-
-                        <!-- Dots animation (same as recording) -->
                         <div id="uploadDots" class="recording-dots" style="display: none;">
                             <span class="dot"></span>
                             <span class="dot"></span>
                             <span class="dot"></span>
                         </div>
                     </div>
-
-                    <!-- Optional filename display -->
                     <p id="selectedFileName" class="text-muted mt-2" style="font-size: 0.9rem;"></p>
                 </div>
 
-                <!-- 🎧 Voice Call Buttons -->
-                <div class="voice-call-container">
-                    <button id="callBtn" class="btn btn-success"><i class="fa fa-phone"></i> Call</button>
-                    <button id="hangupBtn" class="btn btn-danger" style="display:none;"><i class="fa fa-phone-slash"></i> End</button>
+                <div class="voice-call-container" style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <button id="voiceCallBtn" class="btn btn-success"><i class="fa fa-phone"></i> Voice Call</button>
+                    <button id="videoCallBtn" class="btn btn-success"><i class="fa fa-video"></i> Video Call</button>
+                    <button id="hangupBtn" class="btn btn-danger" style="display:none;"><i class="fa fa-phone-slash"></i> End Call</button>
                 </div>
 
-                <!-- 🔔 Ringing Audio -->
                 <audio id="ringtone" src="~/Sounds/MakeCall.mp3" preload="auto"></audio>
                 <audio id="callAcceptSound" src="~/Sounds/StartCall.mp3" preload="auto"></audio>
                 <audio id="callRejectSound" src="~/Sounds/RejectCall.mp3" preload="auto"></audio>
                 <audio id="callEndSound" src="~/Sounds/EndCall.mp3" preload="auto"></audio>
                 <audio id="SendingMessageSound" src="~/Sounds/WirlessSignal.mp3" preload="auto"></audio>
 
-                <!-- 🎙️ Voice Call View -->
                 <div id="callArea" style="display:none; text-align:center; margin-top:20px;">
                     <h4 id="callStatus">Connecting...</h4>
                     <audio id="remoteAudio" autoplay></audio>
@@ -522,63 +745,93 @@
             }
             else
             {
-                <p class="text-center text-danger mt-3">🚫 Sorry, you can’t send messages — there is blocking!.</p>
+                <p class="text-center text-danger mt-3">🚫 Sorry, you can't send messages — there is blocking!.</p>
             }
             <p class="text-center text-danger mt-3" id="thereisBlockingBtn" style="display:none;">
-                🚫 Sorry, you can’t send messages — there is blocking!.
+                🚫 Sorry, you can't send messages — there is blocking!.
             </p>
         </div>
     </div>
 </div>
 
+<div id="videoCallContainer" class="video-container">
+    <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
+    <video id="localVideo" class="local-video" autoplay playsinline muted></video>
+    <div class="video-controls">
+        <button id="muteVideoBtn" class="video-control-btn btn-mute-video" title="Mute">
+            <i class="fa fa-microphone"></i>
+        </button>
+        <button id="toggleVideoBtn" class="video-control-btn btn-toggle-video" title="Stop Video">
+            <i class="fa fa-video"></i>
+        </button>
+        <button id="endVideoCallBtn" class="video-control-btn btn-end-video" title="End Call">
+            <i class="fa fa-phone-slash"></i>
+        </button>
+    </div>
+</div>
+
+<div id="customAlert" class="custom-alert"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
 
 <script>
-        const SendingMessageSound = document.getElementById("SendingMessageSound");
+    const SendingMessageSound = document.getElementById("SendingMessageSound");
+    let callAlertShown = false;
 
-     let CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
-         const connection = new signalR.HubConnectionBuilder()
+    function showCustomAlert(message, isError = false) {
+        const alertDiv = document.getElementById('customAlert');
+        alertDiv.textContent = message;
+        alertDiv.style.background = isError ? 'rgba(220, 53, 69, 0.95)' : 'rgba(0, 0, 0, 0.9)';
+        alertDiv.classList.add('show');
+        setTimeout(() => {
+            alertDiv.classList.remove('show');
+        }, 3000);
+    }
+
+    let CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
+    const connection = new signalR.HubConnectionBuilder()
         .withUrl("/chathub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-     connection.start().then(function () {
+    connection.start().then(function () {
         connection.invoke("JoinGroup", "@Model.GroupName");
         GoToLastMessage();
         GototheBottomoFPage2();
-
     });
 
     connection.onclose(err => {
         console.error("🚨 Connection closed:", err);
     });
 
-    function CheckEnter(){
-        if(!IsThereBlockingBetweenUsers()){      
-
-        CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
-        if (event.key === "Enter" && CurrentUserChatMessage.trim() !== "") {
-            // TODO: Call SignalR sendMessage function here
-            SaveinDB("@Model.ReceiverAppUser.UserName",CurrentUserChatMessage);
-            connection.invoke("SendMessageToGroup", "@Model.GroupName", CurrentUserChatMessage,"@Model.SenderAppUser.UserName");
-
-            // input.value = "";      
-        }}
+    function CheckEnter() {
+        if (!IsThereBlockingBetweenUsers()) {
+            CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
+            if (event.key === "Enter" && CurrentUserChatMessage.trim() !== "") {
+                SaveinDB("@Model.ReceiverAppUser.UserName", CurrentUserChatMessage);
+                    if (document.getElementById("ThereISNoMessagesyet")) {
+                         document.getElementById("ThereISNoMessagesyet").style.display = "none";
+                     }
+                connection.invoke("SendMessageToGroup", "@Model.GroupName", CurrentUserChatMessage, "@Model.SenderAppUser.UserName");
+            }
         }
-      connection.on("ReceiveGroupMessage", function (message,SenderUserName) {
-              if ($('#ThereISNoMessagesyet').length) 
-                {
-                  $('#ThereISNoMessagesyet').hide();
-                }
-             if(!IsThereBlockingBetweenUsers()){
+    }
 
-             SendingMessageSound.play();
-            PrintNewMessage(message,SenderUserName);
-             }
-      });
+    connection.on("ReceiveGroupMessage", function (message, SenderUserName) {
+        if ($('#ThereISNoMessagesyet').length) {
+            $('#ThereISNoMessagesyet').hide();
+        }
+        if (!IsThereBlockingBetweenUsers()) {
+            SendingMessageSound.play();
+            PrintNewMessage(message, SenderUserName);
+        }
+    });
 
-    function SaveinDB(RecieverUserName,CurrentMessage){
+    function SaveinDB(RecieverUserName, CurrentMessage) {
         $.ajax({
-            url: '@Url.Action("SaveMessageinChat", "User")', // ✅ uses Razor directly
+            url: '@Url.Action("SaveMessageinChat", "User")',
             type: 'POST',
             data: {
                 receiverUserName: RecieverUserName,
@@ -586,11 +839,7 @@
             },
             success: function (response) {
                 if (response.success) {
-                    // PrintNewMessage();
                     document.getElementById("sendButtonMsg").value = "";
-                }
-                else{
-
                 }
             },
             error: function (xhr) {
@@ -599,9 +848,27 @@
         });
     }
 
-    function IsThereBlockingBetweenUsers(){
-            $.ajax({
-            url: '@Url.Action("IsThereBlockingBetweenUsers", "User")', // ✅ uses Razor directly
+    // New function to save system messages (call notifications)
+    function SaveSystemMessageInDB(RecieverUserName, Message) {
+        $.ajax({
+            url: '@Url.Action("SaveMessageinChat", "User")',
+            type: 'POST',
+            data: {
+                receiverUserName: RecieverUserName,
+                message: Message
+            },
+            success: function (response) {
+                console.log("System message saved:", Message);
+            },
+            error: function (xhr) {
+                console.error("❌ Error saving system message:", xhr.responseText);
+            }
+        });
+    }
+
+    function IsThereBlockingBetweenUsers() {
+        $.ajax({
+            url: '@Url.Action("IsThereBlockingBetweenUsers", "User")',
             type: 'POST',
             data: {
                 receiverUserName: '@Model.ReceiverAppUser.UserName',
@@ -611,7 +878,7 @@
                     ActionInBlockingFunc();
                     return true;
                 }
-                else{
+                else {
                     return false;
                 }
             },
@@ -621,64 +888,69 @@
         });
     }
 
-    function ActionInBlockingFunc(){
-                    $('#sendButtonMsg').remove();
-                    $('#startBtn').remove();
-                    $('#stopBtn').remove();
-                    $('#chooseFileBtn').remove();
-                    $('#uploadBtn').remove();
-                    $('#userFile').remove();
-                    $('#recordingDots').remove();
-                    $('#callBtn').remove();
-                    $('#hangupBtn').remove();
-                    $('#thereisBlockingBtn').show();
+    function ActionInBlockingFunc() {
+        $('#sendButtonMsg').remove();
+        $('#startBtn').remove();
+        $('#stopBtn').remove();
+        $('#chooseFileBtn').remove();
+        $('#uploadBtn').remove();
+        $('#userFile').remove();
+        $('#recordingDots').remove();
+        $('#voiceCallBtn').remove();
+        $('#videoCallBtn').remove();
+        $('#hangupBtn').remove();
+        $('#thereisBlockingBtn').show();
     }
 
+    function PrintNewMessage(message, SenderUserName) {
+        let list = document.getElementById("MessageListArea");
+        let li = document.createElement("li");
+        li.classList.add("message-item");
 
-    function PrintNewMessage(message,SenderUserName){
-                let list = document.getElementById("MessageListArea");
-                // Create new <li>
-                let li = document.createElement("li");
-                li.classList.add("message-item");
+        const currentUser = '@User.Identity.Name';
+        const isSystemCall = message.includes("started a") || message.includes("ended the");
 
-                // Check if message is from current user
-                const currentUser = '@User.Identity.Name';
-                if (SenderUserName === currentUser) {
-                    li.classList.add("sent");
-                } else {
-                    li.classList.add("received");
-                }
-
-                // Message content
-                li.innerHTML = `
-                    <p class="message-meta">${"@DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt")"} • <strong>${SenderUserName}</strong>  <i class="fa-solid fa-check text-muted"></i></p>
-                    <p class="message-text">${message}</p>
-                `;
-
-                list.appendChild(li);
-                GoToLastMessage();
-                // Optional: scroll to bottom
-                // list.scrollTop = list.scrollHeight;
-    }
-      
-    function GoToLastMessage(){
-            setTimeout(() => {
-        let chatBox = document.querySelector('.chat-section');
-        if (chatBox) {
-            chatBox.scrollTop = chatBox.scrollHeight;
+        if (SenderUserName === currentUser) {
+            li.classList.add("sent");
+        } else {
+            li.classList.add("received");
         }
-    }, 100);
+
+        if (isSystemCall) {
+            li.classList.add("system-call");
+        }
+
+        li.innerHTML = `
+            <p class="message-meta">${new Date().toLocaleString()} • <strong>${SenderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
+            <p class="message-text">${escapeHtml(message)}</p>
+        `;
+        list.appendChild(li);
+        GoToLastMessage();
     }
 
-    function GototheBottomoFPage2(){
-              setTimeout(function () {
-        $(window).scrollTop($(document).height());
-      }, 50);
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function GoToLastMessage() {
+        setTimeout(() => {
+            let chatBox = document.querySelector('.chat-section');
+            if (chatBox) {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }, 100);
+    }
+
+    function GototheBottomoFPage2() {
+        setTimeout(function () {
+            $(window).scrollTop($(document).height());
+        }, 50);
     }
 </script>
 
 <script>
-    // --- Voice recording setup ---
     let mediaRecorder;
     let audioChunks = [];
 
@@ -686,65 +958,47 @@
     const stopBtn = document.getElementById("stopBtn");
     const recordingDots = document.getElementById("recordingDots");
 
-   
-    document.getElementById("startBtn").addEventListener("click", async () => {
-            recordingDots.style.display = "flex";
-        if(!IsThereBlockingBetweenUsers())
-        {
+    startBtn.addEventListener("click", async () => {
+        recordingDots.style.display = "flex";
+        if (!IsThereBlockingBetweenUsers()) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
 
-        try {
+                mediaRecorder.ondataavailable = e => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
 
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
+                mediaRecorder.start();
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            } catch (err) {
+                console.error("Microphone access error:", err);
+                alert("Microphone access denied or unavailable.");
+            }
+        }
+    });
 
-            mediaRecorder.ondataavailable = e => {
-                if (e.data.size > 0) audioChunks.push(e.data);
+    stopBtn.addEventListener("click", async () => {
+        recordingDots.style.display = "none";
+        if (!IsThereBlockingBetweenUsers()) {
+            if (!mediaRecorder) return;
+
+            mediaRecorder.stop();
+            mediaRecorder.onstop = async () => {
+                const blob = new Blob(audioChunks, { type: "audio/webm" });
+                const base64Audio = await blobToBase64(blob);
+
+                connection.invoke("SendAudioToGroup", "@Model.GroupName", "@Model.SenderAppUser.UserName", base64Audio);
+                SaveAudioInDB("@Model.ReceiverAppUser.UserName", base64Audio);
+
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
             };
-
-            mediaRecorder.start();
-            document.getElementById("startBtn").disabled = true;
-            document.getElementById("stopBtn").disabled = false;
-            console.log("🎙️ Recording started...");
-
-        } catch (err) {
-            console.error("❌ Microphone access error:", err);
-            alert("Microphone access denied or unavailable.");
-        }
-
-        }
-    });
-   
-    document.getElementById("stopBtn").addEventListener("click", async () => {
-            recordingDots.style.display = "none";
-        if(!IsThereBlockingBetweenUsers())
-        {
-        if (!mediaRecorder) return;
-
-        mediaRecorder.stop();
-        mediaRecorder.onstop = async () => {
-            const blob = new Blob(audioChunks, { type: "audio/webm" });
-            const base64Audio = await blobToBase64(blob);
-
-            // 🔹 Match your message structure
-            connection.invoke(
-                "SendAudioToGroup", // Hub method name
-                "@Model.GroupName", // Group name
-                "@Model.SenderAppUser.UserName", // Sender username
-                base64Audio
-            ).catch(err => console.error("❌ Error sending audio:", err));
-
-           SaveAudioInDB("@Model.ReceiverAppUser.UserName", base64Audio);
-
-            document.getElementById("startBtn").disabled = false;
-            document.getElementById("stopBtn").disabled = true;
-            console.log("🎧 Audio sent!");
-        };
-
         }
     });
 
-    // Convert Blob to Base64
     function blobToBase64(blob) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -754,12 +1008,10 @@
         });
     }
 
-    // --- Receiving and displaying voice messages ---
     connection.on("ReceiveAudioFromGroup", (senderUserName, base64Audio) => {
         if ($('#ThereISNoMessagesyet').length) {
             $('#ThereISNoMessagesyet').hide();
         }
-
         IsThereBlockingBetweenUsers();
 
         const list = document.getElementById("MessageListArea");
@@ -774,49 +1026,29 @@
         }
 
         const audioSrc = `data:audio/webm;base64,${base64Audio}`;
-        const audioElement = `
+        li.innerHTML = `
+            <p class="message-meta">${new Date().toLocaleString()} • <strong>${senderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
             <audio controls style="width:100%;">
                 <source src="${audioSrc}" type="audio/webm">
-                Your browser does not support audio playback.
             </audio>
         `;
-
-        li.innerHTML = `
-            <p class="message-meta">${"@DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt")"} • <strong>${senderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
-            ${audioElement}
-        `;
-
         list.appendChild(li);
-       SendingMessageSound.play();
+        SendingMessageSound.play();
         GoToLastMessage();
     });
 
-
     function SaveAudioInDB(RecieverUserName, Base64Audio) {
         $.ajax({
-            url: '@Url.Action("SaveAudioMessageInChat", "User")', // new controller action
+            url: '@Url.Action("SaveAudioMessageInChat", "User")',
             type: 'POST',
-            data: {
-                receiverUserName: RecieverUserName,
-                base64Audio: Base64Audio
-            },
-            success: function (response) {
-                if (response.success) {
-
-                } else {
-
-                }
-            },
-            error: function (xhr) {
-                console.error("❌ Error saving audio:", xhr.responseText);
-            }
+            data: { receiverUserName: RecieverUserName, base64Audio: Base64Audio },
+            error: function (xhr) { console.error("Error saving audio:", xhr.responseText); }
         });
     }
-
 </script>
 
 <script>
-        document.getElementById("userFile").addEventListener("change", function () {
+    document.getElementById("userFile").addEventListener("change", function () {
         const file = this.files[0];
         const uploadBtn = document.getElementById("uploadBtn");
         const fileNameLabel = document.getElementById("selectedFileName");
@@ -829,12 +1061,11 @@
             fileNameLabel.textContent = "";
         }
     });
-    // --- File upload setup ---
+
     const uploadBtn = document.getElementById("uploadBtn");
     const fileInput = document.getElementById("userFile");
-    const uploadDots = document.getElementById("uploadDots"); // Optional animation like recordingDots
+    const uploadDots = document.getElementById("uploadDots");
 
-    // --- Handle File Upload Button Click ---
     uploadBtn.addEventListener("click", async () => {
         if (!fileInput.files || fileInput.files.length === 0) {
             alert("Please select a file first.");
@@ -842,37 +1073,31 @@
         }
 
         const file = fileInput.files[0];
-            const maxFileSize = 5 * 1024 * 1024; // 5 MB in bytes
-    if (file.size > maxFileSize) {
-        alert("⚠️ The file size must be less than 5 MB.");
-        return;
-    }
-        uploadDots.style.display = "flex"; // show uploading animation if you have one
-
+        const maxFileSize = 5 * 1024 * 1024;
+        if (file.size > maxFileSize) {
+            alert("⚠️ The file size must be less than 5 MB.");
+            return;
+        }
+        uploadDots.style.display = "flex";
 
         try {
             const formData = new FormData();
             formData.append("file", file);
-
-            // 🔹 Save file in database and server folder
             SaveFileInDB("@Model.ReceiverAppUser.UserName", file);
-
             uploadBtn.disabled = true;
-            console.log("📁 File upload started...");
         } catch (err) {
-            console.error("❌ File upload error:", err);
+            console.error("File upload error:", err);
             alert("File upload failed. Please try again.");
         }
     });
 
-    // --- Save File in DB via AJAX ---
     async function SaveFileInDB(ReceiverUserName, file) {
         const formData = new FormData();
         formData.append("receiverUserName", ReceiverUserName);
         formData.append("file", file);
 
         $.ajax({
-            url: '@Url.Action("SaveFileMessageInChat", "User")', // new controller action
+            url: '@Url.Action("SaveFileMessageInChat", "User")',
             type: 'POST',
             data: formData,
             contentType: false,
@@ -882,35 +1107,23 @@
                 uploadBtn.disabled = false;
 
                 if (response.success) {
-
-                // 🔹 Match your message structure — send via SignalR to group
-                connection.invoke(
-                    "SendFileToGroup", // Hub method name
-                    "@Model.GroupName", // Group name
-                    "@Model.SenderAppUser.UserName", // Sender username
-                     response.fileUrl // sending just file name for real-time notification
-                ).catch(err => console.error("❌ Error sending file notification:", err));
-                 $("#selectedFileName").text("");
-
-                } else {
-                    
+                    connection.invoke("SendFileToGroup", "@Model.GroupName", "@Model.SenderAppUser.UserName", response.fileUrl);
+                    $("#selectedFileName").text("");
                 }
             },
             error: function (xhr) {
                 uploadDots.style.display = "none";
                 uploadBtn.disabled = false;
-                console.error("❌ Error saving file:", xhr.responseText);
+                console.error("Error saving file:", xhr.responseText);
             }
         });
     }
 
-    // --- Receiving and displaying file messages ---
     connection.on("ReceiveFileFromGroup", (senderUserName, fileName) => {
         if ($('#ThereISNoMessagesyet').length) {
             $('#ThereISNoMessagesyet').hide();
         }
-
-         IsThereBlockingBetweenUsers();
+        IsThereBlockingBetweenUsers();
 
         const list = document.getElementById("MessageListArea");
         const li = document.createElement("li");
@@ -924,38 +1137,15 @@
         }
 
         const fileUrl = `../FileUsers/${fileName}`;
-    let fileElement = `
-        <p class="message-meta">${"@DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt")"} • <strong>${senderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
-    `;
+        let fileElement = `<p class="message-meta">${new Date().toLocaleString()} • <strong>${senderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>`;
 
-    if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
-        fileElement += `
-            <div class="chat-image-preview">
-                <a href="${fileUrl}" target="_blank">
-                    <img src="${fileUrl}" alt="Image preview" />
-                </a>
-            </div>
-        `;
-    } else if (/\.(mp4|webm|ogg)$/i.test(fileName)) {
-        fileElement += `
-            <div class="chat-video-preview">
-                <video controls>
-                    <source src="${fileUrl}" type="video/${fileName.split('.').pop()}">
-                    Your browser does not support video playback.
-                </video>
-            </div>
-        `;
-    } else {
-        fileElement += `
-            <div class="chat-file-preview">
-                <div class="file-icon"><i class="fa fa-file"></i></div>
-                <div class="file-info">
-                    <a href="${fileUrl}" target="_blank" download="${fileName}" class="file-name">${fileName}</a>
-                    <small class="file-size">File</small>
-                </div>
-            </div>
-        `;
-    }
+        if (/\.(jpg|jpeg|png|gif)$/i.test(fileName)) {
+            fileElement += `<div class="chat-image-preview"><a href="${fileUrl}" target="_blank"><img src="${fileUrl}" alt="Image preview" /></a></div>`;
+        } else if (/\.(mp4|webm|ogg)$/i.test(fileName)) {
+            fileElement += `<div class="chat-video-preview"><video controls><source src="${fileUrl}" type="video/${fileName.split('.').pop()}"></video></div>`;
+        } else {
+            fileElement += `<div class="chat-file-preview"><div class="file-icon"><i class="fa fa-file"></i></div><div class="file-info"><a href="${fileUrl}" target="_blank" download class="file-name">${fileName}</a><small class="file-size">File</small></div></div>`;
+        }
 
         li.innerHTML = fileElement;
         list.appendChild(li);
@@ -967,9 +1157,12 @@
 <script>
     let localStream;
     let peerConnection;
+    let currentCallType = null;
+    let callStartTime = null;
     const configuration = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
 
-    const callBtn = document.getElementById("callBtn");
+    const voiceCallBtn = document.getElementById("voiceCallBtn");
+    const videoCallBtn = document.getElementById("videoCallBtn");
     const hangupBtn = document.getElementById("hangupBtn");
     const ringtone = document.getElementById("ringtone");
     const callAcceptSound = document.getElementById("callAcceptSound");
@@ -979,152 +1172,302 @@
     const remoteAudio = document.getElementById("remoteAudio");
     const callStatus = document.getElementById("callStatus");
 
-    const currentUser = "@Model.SenderAppUser.Id";
-    const receiverUser = "@Model.ReceiverAppUser.Id";
+    const videoContainer = document.getElementById("videoCallContainer");
+    const remoteVideo = document.getElementById("remoteVideo");
+    const localVideo = document.getElementById("localVideo");
+    const muteVideoBtn = document.getElementById("muteVideoBtn");
+    const toggleVideoBtn = document.getElementById("toggleVideoBtn");
+    const endVideoCallBtn = document.getElementById("endVideoCallBtn");
 
-    // --- 1️⃣ Call button clicked ---
-    callBtn.onclick = async () => {
-        if(!IsThereBlockingBetweenUsers())
-        {     
-        ringtone.play();
-        callStatus.innerText = `Calling ${'@Model.ReceiverAppUser.UserName'}...`;
-        callArea.style.display = "block";
-        await connection.invoke("CallUser", currentUser, receiverUser);
+    const currentUser = "@Model.SenderAppUser.UserName";
+    const receiverUser = "@Model.ReceiverAppUser.UserName";
+
+    let isMuted = false;
+    let isVideoEnabled = true;
+
+    // Function to send call start message
+    async function sendCallStartMessage(callType) {
+        const message = `📞 ${callType} call started with ${receiverUser}`;
+        await SaveSystemMessageInDB(receiverUser, message);
+        await connection.invoke("SendMessageToGroup", "@Model.GroupName", message, "System");
+    }
+
+    // Function to send call end message
+    async function sendCallEndMessage(callType) {
+        const duration = callStartTime ? Math.floor((Date.now() - callStartTime) / 1000) : 0;
+        const minutes = Math.floor(duration / 60);
+        const seconds = duration % 60;
+        const durationText = duration > 0 ? ` (${minutes}:${seconds.toString().padStart(2, '0')})` : '';
+        const message = `🔴 ${callType} call with ${receiverUser} ended${durationText}`;
+        await SaveSystemMessageInDB(receiverUser, message);
+        await connection.invoke("SendMessageToGroup", "@Model.GroupName", message, "System");
+    }
+
+    function showIncomingCallModal(caller, isVideo) {
+        const overlay = document.createElement('div');
+        overlay.className = 'incoming-call-overlay';
+        overlay.id = 'incomingCallOverlay';
+
+        overlay.innerHTML = `
+            <div class="incoming-call-modal">
+                <div class="incoming-call-icon">
+                    <i class="fa ${isVideo ? 'fa-video' : 'fa-phone'}"></i>
+                </div>
+                <h3>Incoming Call</h3>
+                <div class="caller-name">${escapeHtml(caller)}</div>
+                <div class="call-type">${isVideo ? 'Video Call' : 'Voice Call'}</div>
+                <div class="incoming-call-buttons">
+                    <button id="acceptCallBtn" class="btn-accept-call">
+                        <i class="fa fa-check"></i> Accept
+                    </button>
+                    <button id="rejectCallBtn" class="btn-reject-call">
+                        <i class="fa fa-times"></i> Reject
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        document.getElementById('acceptCallBtn').onclick = async () => {
+            overlay.remove();
+            ringtone.pause();
+            ringtone.currentTime = 0;
+            callAcceptSound.play();
+            currentCallType = isVideo ? 'video' : 'voice';
+            callStartTime = Date.now();
+
+            // Send call start message
+            await sendCallStartMessage(currentCallType === 'video' ? 'Video' : 'Voice');
+
+            if (isVideo) {
+                videoContainer.classList.add("active");
+            } else {
+                callArea.style.display = "block";
+                callStatus.innerText = "Connected 🎙️";
+            }
+            await connection.invoke("AcceptCall", caller, currentUser);
+            await startCall(caller, true, isVideo);
+        };
+
+        document.getElementById('rejectCallBtn').onclick = async () => {
+            overlay.remove();
+            ringtone.pause();
+            ringtone.currentTime = 0;
+            await connection.invoke("RejectCall", caller, currentUser);
+        };
+    }
+
+    voiceCallBtn.onclick = async () => {
+        if (!IsThereBlockingBetweenUsers()) {
+            currentCallType = 'voice';
+            ringtone.play();
+            callStatus.innerText = `Calling ${receiverUser}...`;
+            callArea.style.display = "block";
+            await connection.invoke("CallUser", currentUser, receiverUser, false);
         }
     };
 
-    // --- 2️⃣ When incoming call arrives ---
-    connection.on("IncomingCall", async (caller) => {
-        if(!IsThereBlockingBetweenUsers())
-        {       
-        ringtone.play();
-          let userWhocaller = caller == '@Model.Users_VM.FirstOrDefault().Id' ? '@Model.Users_VM.FirstOrDefault().UserName' : '@Model.Users_VM.LastOrDefault().UserName';
-        const accept = confirm(`📞 ${userWhocaller} is calling you. Accept?`);
-         if (accept) {
-            ringtone.pause();
-            callAcceptSound.play();
-            await connection.invoke("AcceptCall", caller, currentUser);
-            startVoiceCall(caller, true);
-        } else {
-            await connection.invoke("RejectCall", caller, currentUser);
+    videoCallBtn.onclick = async () => {
+        if (!IsThereBlockingBetweenUsers()) {
+            currentCallType = 'video';
+            ringtone.play();
+            videoContainer.classList.add("active");
+            await connection.invoke("CallUser", currentUser, receiverUser, true);
         }
+    };
+
+    connection.on("IncomingCall", async (caller, isVideo) => {
+        if (!IsThereBlockingBetweenUsers()) {
+            ringtone.play();
+            showIncomingCallModal(caller, isVideo);
         }
     });
 
-    // --- 3️⃣ When call accepted ---
     connection.on("CallAccepted", (receiver) => {
-        if(!IsThereBlockingBetweenUsers())
-        {
         ringtone.pause();
+        ringtone.currentTime = 0;
         callAcceptSound.play();
-        startVoiceCall(receiver, false);
-        }
+        callStartTime = Date.now();
+
+        // Send call start message (for the caller)
+        setTimeout(async () => {
+            await sendCallStartMessage(currentCallType === 'video' ? 'Video' : 'Voice');
+        }, 500);
+
+        startCall(receiver, false, currentCallType === 'video');
     });
 
-    // --- 4️⃣ When call rejected ---
     connection.on("CallRejected", (receiver) => {
-        if(!IsThereBlockingBetweenUsers())
-        {
         ringtone.pause();
+        ringtone.currentTime = 0;
         callRejectSound.play();
-        let userWhoEndedreceiver = receiver == '@Model.Users_VM.FirstOrDefault().Id' ? '@Model.Users_VM.FirstOrDefault().UserName' : '@Model.Users_VM.LastOrDefault().UserName';
-        alert(`${userWhoEndedreceiver} rejected your call.`);
-        callArea.style.display = "none";
+        if (!callAlertShown) {
+            callAlertShown = true;
+            showCustomAlert(`${receiver} rejected your call`, true);
+            setTimeout(() => { callAlertShown = false; }, 1000);
         }
+        endCall();
     });
 
-    // --- 5️⃣ Start WebRTC connection ---
-    async function startVoiceCall(remoteUser, isReceiver) {
-        if(!IsThereBlockingBetweenUsers())
-        {
-        callBtn.style.display = "none";
-        hangupBtn.style.display = "inline-block";
-        callStatus.innerText = "Connected 🎙️";
-        callArea.style.display = "block";
+    connection.on("CallEnded", async (userWhoEnded) => {
+        if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+        }
+        callEndSound.play();
 
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        peerConnection = new RTCPeerConnection(configuration);
-
-        // Stream local mic audio
-        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-        // Receive remote audio
-        peerConnection.ontrack = event => {
-            remoteAudio.srcObject = event.streams[0];
-        };
-
-        // ICE candidate exchange
-        peerConnection.onicecandidate = event => {
-            if (event.candidate) {
-                connection.invoke("SendIceCandidate", remoteUser, JSON.stringify(event.candidate));
-            }
-        };
-
-        if (isReceiver) {
-            connection.on("ReceiveOffer", async (offerJson) => {
-                await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offerJson)));
-                const answer = await peerConnection.createAnswer();
-                await peerConnection.setLocalDescription(answer);
-                connection.invoke("SendAnswer", remoteUser, JSON.stringify(answer));
-            });
-        } else {
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            connection.invoke("SendOffer", remoteUser, JSON.stringify(offer));
+        // Send call end message if this was an active call
+        if (currentCallType) {
+            await sendCallEndMessage(currentCallType === 'video' ? 'Video' : 'Voice');
         }
 
-        connection.on("ReceiveAnswer", async (answerJson) => {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answerJson)));
-        });
+        if (!callAlertShown) {
+            callAlertShown = true;
+            showCustomAlert(`${userWhoEnded} ended the call`, true);
+            setTimeout(() => { callAlertShown = false; }, 1000);
+        }
+        endCall();
+    });
 
-        connection.on("ReceiveIceCandidate", async (candidateJson) => {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidateJson)));
-        });
+    async function startCall(remoteUser, isReceiver, isVideo) {
+        try {
+            if (isVideo) {
+                callArea.style.display = "none";
+            } else {
+                voiceCallBtn.style.display = "none";
+                videoCallBtn.style.display = "none";
+                hangupBtn.style.display = "inline-block";
+                callStatus.innerText = "Connected 🎙️";
+            }
+
+            const constraints = { audio: true };
+            if (isVideo) constraints.video = true;
+
+            localStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+            if (isVideo && localVideo) {
+                localVideo.srcObject = localStream;
+            }
+
+            peerConnection = new RTCPeerConnection(configuration);
+
+            localStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localStream);
+            });
+
+            if (isVideo) {
+                peerConnection.ontrack = event => {
+                    if (remoteVideo) remoteVideo.srcObject = event.streams[0];
+                };
+            } else {
+                peerConnection.ontrack = event => {
+                    remoteAudio.srcObject = event.streams[0];
+                };
+            }
+
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    connection.invoke("SendIceCandidate", remoteUser, JSON.stringify(event.candidate));
+                }
+            };
+
+            if (isReceiver) {
+                connection.on("ReceiveOffer", async (offerJson, isVideoOffer) => {
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offerJson)));
+                    const answer = await peerConnection.createAnswer();
+                    await peerConnection.setLocalDescription(answer);
+                    connection.invoke("SendAnswer", remoteUser, JSON.stringify(answer));
+                });
+            } else {
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                await connection.invoke("SendOffer", remoteUser, JSON.stringify(offer), isVideo);
+            }
+
+            connection.on("ReceiveAnswer", async (answerJson) => {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answerJson)));
+            });
+
+            connection.on("ReceiveIceCandidate", async (candidateJson) => {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(JSON.parse(candidateJson)));
+            });
+        } catch (err) {
+            console.error("Call error:", err);
+            endCall();
         }
     }
 
-    // --- 6️⃣ Hang up ---
-        hangupBtn.onclick = async () => {
-        if(!IsThereBlockingBetweenUsers())
-        {
+    async function endCall() {
         if (peerConnection) {
             peerConnection.close();
             peerConnection = null;
         }
+        if (localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+            localStream = null;
+        }
 
         callArea.style.display = "none";
-        callBtn.style.display = "inline-block";
+        videoContainer.classList.remove("active");
+        voiceCallBtn.style.display = "inline-block";
+        videoCallBtn.style.display = "inline-block";
         hangupBtn.style.display = "none";
-        ringtone.pause();
-        callAcceptSound.pause();
-        callStatus.innerText = "";
 
-        SaveinDB("@Model.ReceiverAppUser.UserName","Voice Call had been ended..");
-        connection.invoke("SendMessageToGroup", "@Model.GroupName", "Voice Call had been ended..","@Model.SenderAppUser.UserName");
+        if (remoteVideo) remoteVideo.srcObject = null;
+        if (localVideo) localVideo.srcObject = null;
 
-        // 🔹 Notify the other user that the call has ended
-        await connection.invoke("EndCall", currentUser, receiverUser);
+        currentCallType = null;
+        callStartTime = null;
+    }
+
+    hangupBtn.onclick = async () => {
+        if (currentCallType) {
+            await sendCallEndMessage(currentCallType === 'video' ? 'Video' : 'Voice');
         }
+        await connection.invoke("EndCall", currentUser, receiverUser);
+        await endCall();
     };
 
-    // --- 7️⃣ Listen for remote hang up ---
-    connection.on("CallEnded", (userWhoEnded) => {
-        if (peerConnection) {
-            peerConnection.close();
-            peerConnection = null;
-        }
+    if (endVideoCallBtn) {
+        endVideoCallBtn.onclick = async () => {
+            if (currentCallType) {
+                await sendCallEndMessage(currentCallType === 'video' ? 'Video' : 'Voice');
+            }
+            await connection.invoke("EndCall", currentUser, receiverUser);
+            await endCall();
+        };
+    }
 
-        IsThereBlockingBetweenUsers();
+    if (muteVideoBtn) {
+        muteVideoBtn.onclick = () => {
+            if (localStream) {
+                const audioTrack = localStream.getAudioTracks()[0];
+                if (audioTrack) {
+                    isMuted = !isMuted;
+                    audioTrack.enabled = !isMuted;
+                    muteVideoBtn.innerHTML = isMuted ? '<i class="fa fa-microphone-slash"></i>' : '<i class="fa fa-microphone"></i>';
+                }
+            }
+        };
+    }
 
-        callArea.style.display = "none";
-        callBtn.style.display = "inline-block";
-        hangupBtn.style.display = "none";
-        ringtone.pause();
-        callAcceptSound.pause();
-        callEndSound.play();
-      let userWhoEndedUserName = userWhoEnded == '@Model.Users_VM.FirstOrDefault().Id' ? '@Model.Users_VM.FirstOrDefault().UserName' : '@Model.Users_VM.LastOrDefault().UserName';
-        callStatus.innerText = `${userWhoEndedUserName} ended the call.`;
-        alert(`${userWhoEndedUserName} ended the call.`)
-    });
+    if (toggleVideoBtn) {
+        toggleVideoBtn.onclick = () => {
+            if (localStream) {
+                const videoTrack = localStream.getVideoTracks()[0];
+                if (videoTrack) {
+                    isVideoEnabled = !isVideoEnabled;
+                    videoTrack.enabled = isVideoEnabled;
+                    toggleVideoBtn.innerHTML = isVideoEnabled ? '<i class="fa fa-video"></i>' : '<i class="fa fa-video-slash"></i>';
+                }
+            }
+        };
+    }
 
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 </script>
