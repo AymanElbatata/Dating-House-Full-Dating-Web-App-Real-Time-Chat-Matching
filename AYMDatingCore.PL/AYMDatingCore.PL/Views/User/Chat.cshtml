@@ -807,9 +807,6 @@
             CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
             if (event.key === "Enter" && CurrentUserChatMessage.trim() !== "") {
                 SaveinDB("@Model.ReceiverAppUser.UserName", CurrentUserChatMessage);
-                    if (document.getElementById("ThereISNoMessagesyet")) {
-                         document.getElementById("ThereISNoMessagesyet").style.display = "none";
-                     }
                 connection.invoke("SendMessageToGroup", "@Model.GroupName", CurrentUserChatMessage, "@Model.SenderAppUser.UserName");
             }
         }
@@ -836,6 +833,9 @@
             success: function (response) {
                 if (response.success) {
                     document.getElementById("sendButtonMsg").value = "";
+                     if (document.getElementById("ThereISNoMessagesyet")) {
+                         document.getElementById("ThereISNoMessagesyet").style.display = "none";
+                     }
                 }
             },
             error: function (xhr) {
@@ -845,7 +845,7 @@
     }
 
     // New function to save system messages (call notifications)
-    function SaveSystemMessageInDB(RecieverUserName, Message) {
+@*     function SaveSystemMessageInDB(RecieverUserName, Message) {
         $.ajax({
             url: '@Url.Action("SaveMessageinChat", "User")',
             type: 'POST',
@@ -860,7 +860,7 @@
                 console.error("❌ Error saving system message:", xhr.responseText);
             }
         });
-    }
+    } *@
 
     function IsThereBlockingBetweenUsers() {
         $.ajax({
@@ -1184,8 +1184,8 @@
     // Function to send call start message
     async function sendCallStartMessage(callType) {
         const message = `📞 ${callType} call started with ${receiverUser}`;
-        await SaveSystemMessageInDB(receiverUser, message);
-        await connection.invoke("SendMessageToGroup", "@Model.GroupName", message, "System");
+        SaveinDB(receiverUser, message);
+        connection.invoke("SendMessageToGroup", "@Model.GroupName", message, "@Model.SenderAppUser.UserName");
     }
 
     // Function to send call end message
@@ -1195,8 +1195,8 @@
         const seconds = duration % 60;
         const durationText = duration > 0 ? ` (${minutes}:${seconds.toString().padStart(2, '0')})` : '';
         const message = `🔴 ${callType} call with ${receiverUser} ended${durationText}`;
-        await SaveSystemMessageInDB(receiverUser, message);
-        await connection.invoke("SendMessageToGroup", "@Model.GroupName", message, "System");
+        SaveinDB(receiverUser, message);
+        connection.invoke("SendMessageToGroup", "@Model.GroupName", message, "@Model.SenderAppUser.UserName");
     }
 
     function showIncomingCallModal(caller, isVideo) {
