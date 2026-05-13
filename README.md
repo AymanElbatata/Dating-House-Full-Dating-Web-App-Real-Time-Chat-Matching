@@ -1,5 +1,7 @@
 # Dating House – Full Dating Real-Time Chat & Matching Web App (Source Code + Database)
 
+<img src="/Screenshots/MainGIF.gif" width="100%" alt="Dating House Demo"/>
+
 💖 Dating House
 Modern Dating Web Application (Full Source Code + Database)
 <p align="center"> <b>Real-Time Chat • Smart Matching • Scalable Architecture</b> </p> <p align="center"> <a  target="_blank" href="https://datinghouse.runasp.net">🌐 Live Demo</a> &nbsp;•&nbsp; <a  target="_blank" href="https://payhip.com/b/pv81u">🛒 Purchase</a> </p>
