@@ -8,111 +8,205 @@ namespace AYMDatingCore.Helpers
     [Authorize]
     public class ChatHub : Hub
     {
-        // Store online users (Username -> ConnectionId)
+        // Username -> ConnectionId
         private static readonly ConcurrentDictionary<string, string> _onlineUsers = new();
+
+        // ==============================
+        // CONNECTION
+        // ==============================
 
         public override async Task OnConnectedAsync()
         {
-            // Get username from the logged-in user
             var userName = Context.User?.Identity?.Name;
 
             if (!string.IsNullOrEmpty(userName))
             {
-                // Store connection ID for this user
                 _onlineUsers[userName] = Context.ConnectionId;
-                Console.WriteLine($"✅ User connected: {userName} - ConnectionId: {Context.ConnectionId}");
             }
 
             await base.OnConnectedAsync();
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception? exception)
         {
             var userName = Context.User?.Identity?.Name;
 
             if (!string.IsNullOrEmpty(userName))
             {
                 _onlineUsers.TryRemove(userName, out _);
-                Console.WriteLine($"❌ User disconnected: {userName}");
             }
 
             await base.OnDisconnectedAsync(exception);
         }
+
+        // ==============================
+        // GROUP CHAT
+        // ==============================
 
         public async Task JoinGroup(string groupName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }
 
-        public async Task SendMessageToGroup(string groupName, string message, string SenderUserName)
+        public async Task LeaveGroup(string groupName)
         {
-            await Clients.Group(groupName).SendAsync("ReceiveGroupMessage", message, SenderUserName);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
 
-        public async Task SendAudioToGroup(string groupName, string senderUserName, string base64Audio)
+        public async Task SendMessageToGroup(
+            string groupName,
+            string message,
+            string senderUserName)
         {
-            await Clients.Group(groupName).SendAsync("ReceiveAudioFromGroup", senderUserName, base64Audio);
+            await Clients.Group(groupName)
+                .SendAsync(
+                    "ReceiveGroupMessage",
+                    message,
+                    senderUserName);
         }
 
-        public async Task SendFileToGroup(string groupName, string senderUserName, string fileName)
+        public async Task SendAudioToGroup(
+            string groupName,
+            string senderUserName,
+            string base64Audio)
         {
-            await Clients.Group(groupName).SendAsync("ReceiveFileFromGroup", senderUserName, fileName);
+            await Clients.Group(groupName)
+                .SendAsync(
+                    "ReceiveAudioFromGroup",
+                    senderUserName,
+                    base64Audio);
         }
 
-        // CALL METHODS - Now using ConnectionId instead of User()
-        public async Task CallUser(string caller, string receiver, bool isVideo)
+        public async Task SendFileToGroup(
+            string groupName,
+            string senderUserName,
+            string fileName)
         {
-            await Clients.User(receiver).SendAsync("IncomingCall", caller, isVideo);
+            await Clients.Group(groupName)
+                .SendAsync(
+                    "ReceiveFileFromGroup",
+                    senderUserName,
+                    fileName);
         }
 
-        public async Task AcceptCall(string caller, string receiver)
+        // ==============================
+        // CALLS
+        // ==============================
+
+        public async Task CallUser(
+            string caller,
+            string receiver,
+            bool isVideo)
         {
-            if (_onlineUsers.TryGetValue(caller, out string callerConnectionId))
+            if (_onlineUsers.TryGetValue(receiver, out var receiverConnectionId))
             {
-                await Clients.Client(callerConnectionId).SendAsync("CallAccepted", receiver);
+                await Clients.Client(receiverConnectionId)
+                    .SendAsync(
+                        "IncomingCall",
+                        caller,
+                        isVideo);
             }
         }
 
-        public async Task RejectCall(string caller, string receiver)
+        public async Task AcceptCall(
+            string caller,
+            string receiver)
         {
-            if (_onlineUsers.TryGetValue(caller, out string callerConnectionId))
+            if (_onlineUsers.TryGetValue(caller, out var callerConnectionId))
             {
-                await Clients.Client(callerConnectionId).SendAsync("CallRejected", receiver);
+                await Clients.Client(callerConnectionId)
+                    .SendAsync(
+                        "CallAccepted",
+                        receiver);
             }
         }
 
-        public async Task EndCall(string caller, string receiver)
+        public async Task RejectCall(
+            string caller,
+            string receiver)
         {
-            if (_onlineUsers.TryGetValue(caller, out string callerConnectionId))
+            if (_onlineUsers.TryGetValue(caller, out var callerConnectionId))
             {
-                await Clients.Client(callerConnectionId).SendAsync("CallEnded", caller);
-            }
-
-            if (_onlineUsers.TryGetValue(receiver, out string receiverConnectionId))
-            {
-                await Clients.Client(receiverConnectionId).SendAsync("CallEnded", caller);
-            }
-        }
-
-        public async Task SendOffer(string receiver, string offer, bool isVideo)
-        {
-            await Clients.User(receiver).SendAsync("ReceiveOffer", offer, isVideo);
-        }
-
-        public async Task SendAnswer(string receiver, string answer)
-        {
-            if (_onlineUsers.TryGetValue(receiver, out string receiverConnectionId))
-            {
-                await Clients.Client(receiverConnectionId).SendAsync("ReceiveAnswer", answer);
+                await Clients.Client(callerConnectionId)
+                    .SendAsync(
+                        "CallRejected",
+                        receiver);
             }
         }
 
-        public async Task SendIceCandidate(string receiver, string candidate)
+        public async Task EndCall(
+            string caller,
+            string receiver)
         {
-            if (_onlineUsers.TryGetValue(receiver, out string receiverConnectionId))
+            if (_onlineUsers.TryGetValue(caller, out var callerConnectionId))
             {
-                await Clients.Client(receiverConnectionId).SendAsync("ReceiveIceCandidate", candidate);
+                await Clients.Client(callerConnectionId)
+                    .SendAsync(
+                        "CallEnded",
+                        caller);
             }
+
+            if (_onlineUsers.TryGetValue(receiver, out var receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId)
+                    .SendAsync(
+                        "CallEnded",
+                        caller);
+            }
+        }
+
+        // ==============================
+        // WEBRTC
+        // ==============================
+
+        public async Task SendOffer(
+            string receiver,
+            string offer,
+            bool isVideo)
+        {
+            if (_onlineUsers.TryGetValue(receiver, out var receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId)
+                    .SendAsync(
+                        "ReceiveOffer",
+                        offer,
+                        isVideo);
+            }
+        }
+
+        public async Task SendAnswer(
+            string receiver,
+            string answer)
+        {
+            if (_onlineUsers.TryGetValue(receiver, out var receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId)
+                    .SendAsync(
+                        "ReceiveAnswer",
+                        answer);
+            }
+        }
+
+        public async Task SendIceCandidate(
+            string receiver,
+            string candidate)
+        {
+            if (_onlineUsers.TryGetValue(receiver, out var receiverConnectionId))
+            {
+                await Clients.Client(receiverConnectionId)
+                    .SendAsync(
+                        "ReceiveIceCandidate",
+                        candidate);
+            }
+        }
+
+        // ==============================
+        // ONLINE USERS
+        // ==============================
+
+        public Task<List<string>> GetOnlineUsers()
+        {
+            return Task.FromResult(_onlineUsers.Keys.ToList());
         }
     }
 }

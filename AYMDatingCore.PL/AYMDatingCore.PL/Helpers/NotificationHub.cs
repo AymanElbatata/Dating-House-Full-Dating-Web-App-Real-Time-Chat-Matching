@@ -1,63 +1,163 @@
 ﻿using AYMDatingCore.BLL.Interfaces;
-using AYMDatingCore.BLL.Repositories;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using System.Collections.Concurrent;
 
-namespace AYMDatingCore.Helpers
+public class NotificationHub : Hub
 {
-    public class NotificationHub : Hub
+    private readonly IUnitOfWork unitOfWork;
+
+    // UserId -> ConnectionId
+    private static readonly ConcurrentDictionary<string, string> onlineUsers = new();
+
+    public NotificationHub(IUnitOfWork unitOfWork)
     {
-        private readonly IUnitOfWork unitOfWork;
+        this.unitOfWork = unitOfWork;
+    }
 
-        public NotificationHub(IUnitOfWork unitOfWork)
+    // ==============================
+    // CONNECTION
+    // ==============================
+
+    public override async Task OnConnectedAsync()
+    {
+        var user = await unitOfWork.UserManager.GetUserAsync(Context.User);
+
+        if (user != null)
         {
-            this.unitOfWork = unitOfWork;
-        }
-        public async Task GetLikeNotification(string userRecieverId)
-        {
-            await Clients.User(userRecieverId).SendAsync("ReceiveLikeNotification");
-        }
-        public async Task GetViewNotification(string userRecieverId)
-        {
-            await Clients.User(userRecieverId).SendAsync("ReceiveViewNotification");
-        }
-        public async Task GetMessageNotification(string userRecieverId)
-        {
-            await Clients.User(userRecieverId).SendAsync("ReceiveMessageNotification");
-        }
-        public async Task GetFavoriteNotification(string userRecieverId)
-        {
-            await Clients.User(userRecieverId).SendAsync("ReceiveFavoriteNotification");
-        }
-        public async Task GetBlockNotification(string userRecieverId)
-        {
-            await Clients.User(userRecieverId).SendAsync("ReceiveBlockNotification");
-        }
-        public override async Task OnConnectedAsync()
-        {
-            var user = await unitOfWork.UserManager.GetUserAsync(Context.User);
-            if (user != null)
-            {
-                user.IsOnline = true;
-                user.LastSeen = DateTime.Now;
-                await unitOfWork.UserManager.UpdateAsync(user);
-            }
-            await base.OnConnectedAsync();
+            onlineUsers[user.Id] = Context.ConnectionId;
+
+            user.IsOnline = true;
+            user.LastSeen = DateTime.Now;
+
+            await unitOfWork.UserManager.UpdateAsync(user);
         }
 
-        public override async Task OnDisconnectedAsync(Exception? exception)
+        await base.OnConnectedAsync();
+    }
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        var user = await unitOfWork.UserManager.GetUserAsync(Context.User);
+
+        if (user != null)
         {
-            var user = await unitOfWork.UserManager.GetUserAsync(Context.User);
-            if (user != null)
-            {
-                user.IsOnline = false;
-                user.LastSeen = DateTime.Now;
-                await unitOfWork.UserManager.UpdateAsync(user);
-            }
-            await base.OnDisconnectedAsync(exception);
+            onlineUsers.TryRemove(user.Id, out _);
+
+            user.IsOnline = false;
+            user.LastSeen = DateTime.Now;
+
+            await unitOfWork.UserManager.UpdateAsync(user);
+        }
+
+        await base.OnDisconnectedAsync(exception);
+    }
+
+    // ==============================
+    // LIKE NOTIFICATION
+    // ==============================
+
+    public async Task GetLikeNotification(string userRecieverId)
+    {
+        if (onlineUsers.TryGetValue(userRecieverId, out var connectionId))
+        {
+            var count = unitOfWork.UserLikeRepository
+                .GetAllCustomized(filter =>
+                    filter.ReceiverAppUserId == userRecieverId &&
+                    !filter.IsSeen &&
+                    !filter.IsDeleted)
+                .Count();
+
+            await Clients.Client(connectionId)
+                .SendAsync("ReceiveLikeNotification", count);
         }
     }
 
+    // ==============================
+    // VIEW NOTIFICATION
+    // ==============================
 
+    public async Task GetViewNotification(string userRecieverId)
+    {
+        if (onlineUsers.TryGetValue(userRecieverId, out var connectionId))
+        {
+            var count = unitOfWork.UserViewRepository
+                .GetAllCustomized(filter =>
+                    filter.ReceiverAppUserId == userRecieverId &&
+                    !filter.IsSeen &&
+                    !filter.IsDeleted)
+                .Count();
+
+            await Clients.Client(connectionId)
+                .SendAsync("ReceiveViewNotification", count);
+        }
+    }
+
+    // ==============================
+    // MESSAGE NOTIFICATION
+    // ==============================
+
+    public async Task GetMessageNotification(string userRecieverId)
+    {
+        if (onlineUsers.TryGetValue(userRecieverId, out var connectionId))
+        {
+            var count = unitOfWork.UserMessageRepository
+                .GetAllCustomized(filter =>
+                    filter.ReceiverAppUserId == userRecieverId &&
+                    !filter.IsSeen &&
+                    !filter.IsDeleted)
+                .Count();
+
+            await Clients.Client(connectionId)
+                .SendAsync("ReceiveMessageNotification", count);
+        }
+    }
+
+    // ==============================
+    // FAVORITE NOTIFICATION
+    // ==============================
+
+    public async Task GetFavoriteNotification(string userRecieverId)
+    {
+        if (onlineUsers.TryGetValue(userRecieverId, out var connectionId))
+        {
+            var count = unitOfWork.UserFavoriteRepository
+                .GetAllCustomized(filter =>
+                    filter.ReceiverAppUserId == userRecieverId &&
+                    !filter.IsSeen &&
+                    !filter.IsDeleted)
+                .Count();
+
+            await Clients.Client(connectionId)
+                .SendAsync("ReceiveFavoriteNotification", count);
+        }
+    }
+
+    // ==============================
+    // BLOCK NOTIFICATION
+    // ==============================
+
+    public async Task GetBlockNotification(string userRecieverId)
+    {
+        if (onlineUsers.TryGetValue(userRecieverId, out var connectionId))
+        {
+            var count = unitOfWork.UserBlockRepository
+                .GetAllCustomized(filter =>
+                    filter.ReceiverAppUserId == userRecieverId &&
+                    !filter.IsSeen &&
+                    !filter.IsDeleted)
+                .Count();
+
+            await Clients.Client(connectionId)
+                .SendAsync("ReceiveBlockNotification", count);
+        }
+    }
+
+    // ==============================
+    // ONLINE USERS
+    // ==============================
+
+    public Task<List<string>> GetOnlineUsers()
+    {
+        return Task.FromResult(onlineUsers.Keys.ToList());
+    }
 }
