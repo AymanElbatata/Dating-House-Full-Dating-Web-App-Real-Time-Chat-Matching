@@ -10,5 +10,7 @@ namespace AYMDatingCore.DAL.IRepositories
 {
     public interface IUserMessageRepository : IGenericRepository<UserMessageTBL>
     {
+        int AddToGetRowID(UserMessageTBL userMessageTBL);
+
     }
 }

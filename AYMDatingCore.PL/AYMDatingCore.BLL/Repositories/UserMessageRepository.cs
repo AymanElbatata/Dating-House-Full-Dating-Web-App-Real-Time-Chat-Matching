@@ -18,5 +18,12 @@ namespace AYMDatingCore.BLL.Repositories
         {
             _context = context;
         }
+
+        public int AddToGetRowID(UserMessageTBL userMessageTBL)
+        {
+            _context.UserMessageTBLs.Add(userMessageTBL);
+            _context.SaveChanges();
+            return userMessageTBL.ID;
+        }
     }
 }
