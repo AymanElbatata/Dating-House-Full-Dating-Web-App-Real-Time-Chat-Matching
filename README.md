@@ -92,6 +92,6 @@ For customization or business inquiries, feel free to reach out.
 If you like this project, please give it a star ⭐
 
 ------------
-## 🎥 Selling Roles:
+## 🎥 Selling Rules:
 
 [![Watch the video](https://img.youtube.com/vi/h4qdbdfUX2M/maxresdefault.jpg)](https://www.youtube.com/watch?v=h4qdbdfUX2M)
