@@ -596,7 +596,7 @@ namespace AYMDatingCore.PL.Controllers
                                 Email.Body = await GetActivationTemplateAsync(RecieverUser.FirstName, Email.Subject, SenderUser.UserName, message, configuration["AymanDatingCore.Pl.Url"] + "User/UserMessages", configuration["AymanDatingCore.Pl.Url"]);
                                 var newEmail = Mapper.Map<EmailTBL>(Email);
                                 // Send email
-                                await unitOfWork.EmailTBLRepository.SendEmailAsync(newEmail);
+                                unitOfWork.EmailTBLRepository.SendEmailAsync(newEmail);
                                 // Save email
                                 unitOfWork.EmailTBLRepository.Add(newEmail);
                            }
@@ -769,12 +769,11 @@ namespace AYMDatingCore.PL.Controllers
             string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "template2", "User-New-Message.html");
             string html = await System.IO.File.ReadAllTextAsync(templatePath);
 
-            // Replace placeholders
             html = html.Replace("{{FirstName}}", FirstName);
             html = html.Replace("{{Subject}}", Subject);
             html = html.Replace("{{SenderUserName}}", SenderUserName);
             html = html.Replace("{{NewMessage}}", NewMessage);
-            html = html.Replace("{{DateofMaking}}", DateTime.Now.ToString());
+            html = html.Replace("{{DateofMaking}}", DateTime.Now.ToString("dd MMMM yyyy, hh:mm tt"));
             html = html.Replace("{{WebLink}}", WebLink);
             html = html.Replace("{{MainLink}}", MainLink);
             html = html.Replace("{{Year}}", DateTime.Now.Year.ToString());
