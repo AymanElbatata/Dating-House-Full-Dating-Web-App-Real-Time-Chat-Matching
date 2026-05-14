@@ -1,7 +1,9 @@
-﻿using AYMDatingCore.BLL.Repositories;
+﻿using AYMDatingCore.BLL.Interfaces;
+using AYMDatingCore.BLL.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Concurrent;
+using System.Security.Claims;
 
 namespace AYMDatingCore.Helpers
 {
@@ -10,7 +12,15 @@ namespace AYMDatingCore.Helpers
     {
         // Username -> ConnectionId
         private static readonly ConcurrentDictionary<string, string> _onlineUsers = new();
+        private readonly IUnitOfWork unitOfWork;
+        private readonly IHubContext<NotificationHub> _notificationHubContext;
 
+
+        public ChatHub(IUnitOfWork unitOfWork, IHubContext<NotificationHub> notificationHubContext)
+        {
+            this.unitOfWork = unitOfWork;
+            _notificationHubContext = notificationHubContext;
+        }
         // ==============================
         // CONNECTION
         // ==============================
@@ -58,14 +68,24 @@ namespace AYMDatingCore.Helpers
             await Clients.Group(groupName).SendAsync("ReceiveGroupMessage", message, SenderUserName, messageId);
         }
 
-        public async Task NotifyMessageSeen(int messageId, string senderUserName, string groupName)
-        {
-            // Send to the entire group, but sender will filter by username
-            await Clients.Group(groupName).SendAsync("MessageSeenByReceiver", messageId, senderUserName);
-        }
+        //public async Task NotifyMessageSeen(int messageId, string senderUserName, string groupName)
+        //{
+        //    // Send to the entire group, but sender will filter by username
+        //    await Clients.Group(groupName).SendAsync("MessageSeenByReceiver", messageId, senderUserName);
+        //}
 
         public async Task MarkMessageAsSeen(int messageId, string groupName)
         {
+            var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var count = unitOfWork.UserMessageRepository
+                .GetAllCustomized(filter =>
+                    filter.ReceiverAppUserId == userId &&
+                    !filter.IsSeen &&
+                    !filter.IsDeleted)
+                .Count();
+            await _notificationHubContext.Clients.User(userId).SendAsync("ReceiveMessageNotification", count);
+
             await Clients.Group(groupName).SendAsync("UpdateMessageIcon", messageId);
         }
 
