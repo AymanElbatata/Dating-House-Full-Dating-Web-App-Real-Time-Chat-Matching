@@ -620,7 +620,7 @@
                     foreach (var msg in PreviousMessage)
                     {
                         string isSystemCall = msg.Message != null && (msg.Message.Contains("started a") || msg.Message.Contains("ended the")) ? "system-call" : "";
-                        <li class="message-item @(msg.SenderAppUser.UserName == User.Identity.Name ? "sent" : "received") @isSystemCall">
+                        <li class="message-item @(msg.SenderAppUser.UserName == User.Identity.Name ? "sent" : "received")" data-message-id="@msg.ID">
                             <p class="message-meta">
                                 @msg.CreationDate?.ToString("dd MMMM yyyy, hh:mm tt") • <strong>@msg.SenderAppUser.UserName</strong>
                                 @if (msg.IsSeen)
@@ -803,22 +803,36 @@
     });
 
     function CheckEnter() {
-        if (!IsThereBlockingBetweenUsers()) {
-            CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
+        if(!IsThereBlockingBetweenUsers()){
+            let CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
             if (event.key === "Enter" && CurrentUserChatMessage.trim() !== "") {
-                SaveinDB("@Model.ReceiverAppUser.UserName", CurrentUserChatMessage);
-                connection.invoke("SendMessageToGroup", "@Model.GroupName", CurrentUserChatMessage, "@Model.SenderAppUser.UserName");
+                // Save message and get the ID
+                $.ajax({
+                    url: '@Url.Action("SaveMessageinChat", "User")',
+                    type: 'POST',
+                    data: {
+                        receiverUserName: '@Model.ReceiverAppUser.UserName',
+                        message: CurrentUserChatMessage
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Send to group with messageId
+                            connection.invoke("SendMessageToGroup", "@Model.GroupName", CurrentUserChatMessage, "@Model.SenderAppUser.UserName", response.messageId);
+                            document.getElementById("sendButtonMsg").value = "";
+                        }
+                    }
+                });
             }
         }
     }
 
-    connection.on("ReceiveGroupMessage", function (message, SenderUserName) {
+    connection.on("ReceiveGroupMessage", function (message, SenderUserName, messageId) {
         if ($('#ThereISNoMessagesyet').length) {
             $('#ThereISNoMessagesyet').hide();
         }
-        if (!IsThereBlockingBetweenUsers()) {
+        if(!IsThereBlockingBetweenUsers()){
             SendingMessageSound.play();
-            PrintNewMessage(message, SenderUserName);
+            PrintNewMessage(message, SenderUserName, messageId);
         }
     });
 
@@ -843,24 +857,6 @@
             }
         });
     }
-
-    // New function to save system messages (call notifications)
-@*     function SaveSystemMessageInDB(RecieverUserName, Message) {
-        $.ajax({
-            url: '@Url.Action("SaveMessageinChat", "User")',
-            type: 'POST',
-            data: {
-                receiverUserName: RecieverUserName,
-                message: Message
-            },
-            success: function (response) {
-                console.log("System message saved:", Message);
-            },
-            error: function (xhr) {
-                console.error("❌ Error saving system message:", xhr.responseText);
-            }
-        });
-    } *@
 
     function IsThereBlockingBetweenUsers() {
         $.ajax({
@@ -898,26 +894,29 @@
         $('#thereisBlockingBtn').show();
     }
 
-    function PrintNewMessage(message, SenderUserName) {
+    function PrintNewMessage(message, SenderUserName, messageId) {
         let list = document.getElementById("MessageListArea");
         let li = document.createElement("li");
         li.classList.add("message-item");
+        li.setAttribute('data-message-id', messageId);  
 
         const currentUser = '@User.Identity.Name';
-        const isSystemCall = message.includes("started a") || message.includes("ended the");
-
         if (SenderUserName === currentUser) {
             li.classList.add("sent");
         } else {
             li.classList.add("received");
         }
 
-        if (isSystemCall) {
-            li.classList.add("system-call");
+        // Icon for sent vs received
+        let iconHtml = '';
+        if (SenderUserName === currentUser) {
+            iconHtml = '<i class="fa-solid fa-check text-muted"></i>';
+        } else {
+            iconHtml = '<i class="fa-solid fa-check text-muted"></i>';
         }
 
         li.innerHTML = `
-            <p class="message-meta">${new Date().toLocaleString()} • <strong>${SenderUserName}</strong> <i class="fa-solid fa-check text-muted"></i></p>
+            <p class="message-meta">${new Date().toLocaleString()} • <strong>${SenderUserName}</strong> ${iconHtml}</p>
             <p class="message-text">${escapeHtml(message)}</p>
         `;
         list.appendChild(li);
@@ -1466,4 +1465,47 @@
         div.textContent = text;
         return div.innerHTML;
     }
+</script>
+<script>
+        connection.on("MessageSeenUpdate", function(messageId) {
+        // Update the specific message icon to double check
+        $('#MessageListArea li[data-message-id="' + messageId + '"] .fa-check')
+            .removeClass('fa-check text-muted')
+            .addClass('fa-check-double text-primary');
+    });
+    connection.on("MessageSeenByReceiver", function(messageId, senderUserName) {
+        // Only update if I am the sender (current user is the one who sent the message)
+        if (senderUserName === "@Model.SenderAppUser.UserName") {
+            $('#MessageListArea li[data-message-id="' + messageId + '"] .fa-check').each(function() {
+                $(this).removeClass('fa-check text-muted').addClass('fa-check-double text-primary');
+            });
+        }
+    });
+        connection.on("UpdateMessageIcon", function(messageId) {
+        console.log("UpdateMessageIcon for message: " + messageId);
+        $('#MessageListArea li[data-message-id="' + messageId + '"] .fa-check').each(function() {
+            $(this).removeClass('fa-check text-muted').addClass('fa-check-double text-primary');
+        });
+    });
+       $(document).on('mouseenter', '.message-item.received', function() {
+        var $msg = $(this);
+        var messageId = $msg.data('message-id');
+        var alreadySeen = $msg.data('seen');
+
+        if (messageId && !alreadySeen) {
+            $msg.data('seen', true);
+
+            $.ajax({
+                url: '@Url.Action("MarkSingleMessageAsSeen", "User")',
+                type: 'POST',
+                data: { messageId: messageId },
+                success: function(response) {
+                    if (response.success) {
+                        $msg.find('.fa-check').removeClass('fa-check text-muted').addClass('fa-check-double text-primary');
+                        connection.invoke("MarkMessageAsSeen", messageId, "@Model.GroupName");
+                    }
+                }
+            });
+        }
+    });
 </script>

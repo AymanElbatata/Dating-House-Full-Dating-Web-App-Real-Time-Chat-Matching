@@ -53,16 +53,20 @@ namespace AYMDatingCore.Helpers
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
         }
 
-        public async Task SendMessageToGroup(
-            string groupName,
-            string message,
-            string senderUserName)
+        public async Task SendMessageToGroup(string groupName, string message, string SenderUserName, int messageId)
         {
-            await Clients.Group(groupName)
-                .SendAsync(
-                    "ReceiveGroupMessage",
-                    message,
-                    senderUserName);
+            await Clients.Group(groupName).SendAsync("ReceiveGroupMessage", message, SenderUserName, messageId);
+        }
+
+        public async Task NotifyMessageSeen(int messageId, string senderUserName, string groupName)
+        {
+            // Send to the entire group, but sender will filter by username
+            await Clients.Group(groupName).SendAsync("MessageSeenByReceiver", messageId, senderUserName);
+        }
+
+        public async Task MarkMessageAsSeen(int messageId, string groupName)
+        {
+            await Clients.Group(groupName).SendAsync("UpdateMessageIcon", messageId);
         }
 
         public async Task SendAudioToGroup(

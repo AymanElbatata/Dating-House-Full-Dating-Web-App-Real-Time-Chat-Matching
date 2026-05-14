@@ -513,6 +513,32 @@ namespace AYMDatingCore.PL.Controllers
 
             return View(data);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkSingleMessageAsSeen(int messageId)
+        {
+            try
+            {
+                var message = unitOfWork.UserMessageRepository.GetById(messageId);
+                if (message != null && !message.IsSeen)
+                {
+                    message.IsSeen = true;
+                    message.LastUpdateDate = DateTime.Now;
+                    unitOfWork.UserMessageRepository.Update(message);
+
+                    // Notify sender via SignalR
+                    var senderId = message.SenderAppUserId;
+                    await _hubContext.Clients.User(senderId.ToString()).SendAsync("MessageSeenUpdate", messageId);
+
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false });
+            }
+        }
         #endregion
 
         #region Matching
@@ -547,6 +573,7 @@ namespace AYMDatingCore.PL.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveMessageinChat(string receiverUserName, string message)
         {
+            int NEwMessageId = 0;
             var SenderUser = await GetUserByUserName(User.Identity.Name);
             var RecieverUser = await GetUserByUserName(receiverUserName);
             if (SenderUser != null && RecieverUser != null)
@@ -554,7 +581,7 @@ namespace AYMDatingCore.PL.Controllers
                  bool IsThereBlocking = unitOfWork.UserBlockRepository.GetAllCustomized(filter: a => (a.IsDeleted == false && a.SenderAppUserId == SenderUser.Id && a.ReceiverAppUserId == RecieverUser.Id) || (a.IsDeleted == false && a.SenderAppUserId == RecieverUser.Id && a.ReceiverAppUserId == SenderUser.Id)).Any();
                 if (!IsThereBlocking)
                 {
-                    unitOfWork.UserMessageRepository.Add(new DAL.Entities.UserMessageTBL() { SenderAppUserId = SenderUser.Id, ReceiverAppUserId = RecieverUser.Id, Message = message });
+                    NEwMessageId = unitOfWork.UserMessageRepository.AddToGetRowID(new DAL.Entities.UserMessageTBL() { SenderAppUserId = SenderUser.Id, ReceiverAppUserId = RecieverUser.Id, Message = message });
                     await _hubContext.Clients.User(RecieverUser.Id).SendAsync("ReceiveMessageNotification", unitOfWork.UserMessageRepository.GetAllCustomized(filter: a => a.IsDeleted == false && a.IsSeen == false && a.ReceiverAppUserId == RecieverUser.Id).Count());
                     // Send Email Notification if user is offline
                     try
@@ -580,7 +607,7 @@ namespace AYMDatingCore.PL.Controllers
 
                     }
 
-                    return Json(new { success = true });
+                    return Json(new { success = true, messageId = NEwMessageId });
                 }
             }
 
