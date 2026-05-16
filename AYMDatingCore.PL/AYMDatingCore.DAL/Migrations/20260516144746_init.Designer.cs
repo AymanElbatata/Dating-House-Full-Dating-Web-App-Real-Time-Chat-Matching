@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AYMDatingCore.DAL.Migrations
 {
     [DbContext(typeof(AymanDatingCoreDbContext))]
-    [Migration("20260205150020_init")]
+    [Migration("20260516144746_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -68,6 +68,9 @@ namespace AYMDatingCore.DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ActivationCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ActivationPhone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Address")
@@ -135,9 +138,6 @@ namespace AYMDatingCore.DAL.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")

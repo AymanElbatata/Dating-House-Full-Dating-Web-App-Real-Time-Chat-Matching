@@ -21,8 +21,8 @@ namespace AYMDatingCore.DAL.BaseEntity
         public string? FirstName { get; set; } = null!;
         public string? LastName { get; set; } = null!;
         public string? Address { get; set; } = null!;
-        public string? Phone { get; set; } = null!;
         public string? ActivationCode { get; set; } = null!;
+        public string? ActivationPhone { get; set; } = null!;
 
         public bool IsActivated { get; set; } = false;
         public bool IsDeleted { get; set; } = false;

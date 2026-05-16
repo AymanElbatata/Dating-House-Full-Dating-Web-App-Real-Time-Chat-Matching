@@ -196,7 +196,7 @@ namespace AYMDatingCore.PL.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Address = "Default Address",
-                    Phone = "0123456789",
+                    PhoneNumber = "0123456789",
                     CountryTBLId = 1,
                     GenderTBLId = 1,
                     ActivationCode = unitOfWork.MySPECIALGUID.GetUniqueKey(12),

@@ -237,7 +237,7 @@ namespace AYMDatingCore.PL.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     Address = model.Address,
-                    Phone = model.Phone,
+                    PhoneNumber = model.Phone,
                     CountryTBLId = model.CountryTBLId,
                     GenderTBLId = model.GenderTBLId,
                     ActivationCode = unitOfWork.MySPECIALGUID.GetUniqueKey(12),

@@ -67,6 +67,9 @@ namespace AYMDatingCore.DAL.Migrations
                     b.Property<string>("ActivationCode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ActivationPhone")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
@@ -132,9 +135,6 @@ namespace AYMDatingCore.DAL.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
