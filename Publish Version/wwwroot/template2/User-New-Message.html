@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: linear-gradient(135deg, #ffe0f0 0%, #ffd1dc 100%);
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(255, 105, 180, 0.25);
+            border: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            padding: 35px 20px;
+            text-align: center;
+        }
+
+        .heart-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            color: #ffffff;
+            margin: 10px 0 0;
+            font-size: 14px;
+            font-weight: normal;
+        }
+
+        .content {
+            padding: 35px 30px;
+            background: #ffffff;
+        }
+
+        .greeting {
+            font-size: 22px;
+            color: #c2185b;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+        }
+
+        .greeting-text {
+            color: #333333;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .message-card {
+            background: #fff5f8;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 4px solid #ff69b4;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .sender-name {
+            color: #c2185b;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .sender-name:before {
+                content: "💌";
+                font-size: 20px;
+            }
+
+        .message-text {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.6;
+            font-style: italic;
+            margin: 15px 0;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 15px;
+            border: 1px solid #ffe0f0;
+        }
+
+        .date-info {
+            font-size: 12px;
+            color: #888888;
+            margin-top: 15px;
+            text-align: right;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin: 30px 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 35px;
+            background: linear-gradient(135deg, #ff69b4, #ff1493);
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        }
+
+            .btn:hover {
+                transform: scale(1.05);
+                box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+            }
+
+        .romantic-quote {
+            text-align: center;
+            padding: 20px;
+            background: #fff0f5;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+
+            .romantic-quote p {
+                color: #c2185b;
+                font-size: 14px;
+                font-style: italic;
+                margin: 0;
+                font-weight: 500;
+            }
+
+        .info-text {
+            text-align: center;
+            color: #555555;
+            font-size: 13px;
+            margin: 20px 0 0;
+        }
+
+        .footer {
+            background: #fff0f5;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #ffe0f0;
+        }
+
+            .footer a {
+                color: #c2185b;
+                text-decoration: none;
+                font-size: 13px;
+                font-weight: bold;
+            }
+
+                .footer a:hover {
+                    text-decoration: underline;
+                }
+
+            .footer p {
+                color: #666666;
+                font-size: 11px;
+                margin: 5px 0;
+            }
+
+        .small-heart {
+            color: #c2185b;
+            font-size: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="heart-icon">💖💕💖</div>
+            <h1 class="text-dark">New Message Awaits You! 💌</h1>
+            <p class="text-black">Someone is thinking about you...</p>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                Dear {{FirstName}} 💗
+            </div>
+
+            <p class="greeting-text text-danger">
+                You've received a sweet new message from someone special!
+            </p>
+
+            <div class="message-card">
+                <div class="sender-name">
+                    {{SenderUserName}}
+                </div>
+                <div class="message-text">
+                    " {{NewMessage}} "
+                </div>
+                <div class="date-info">
+                    ✨ Sent on: {{DateofMaking}}
+                </div>
+            </div>
+
+            <div class="romantic-quote">
+                <p>💗 "A message is a little drop of love that travels through the air to reach your heart." 💗</p>
+            </div>
+
+            <div class="btn-container">
+                <a href="{{WebLink}}" class="btn">💕 Read Your Message 💕</a>
+            </div>
+
+            <p class="info-text">
+                Click the button above to see who's thinking of you and reply with a smile! 😊
+            </p>
+        </div>
+
+        <div class="footer">
+            <a href="{{MainLink}}">✨ {{Subject}} ✨</a>
+            <p>&copy; {{Year}} Dating House. Where hearts connect. 💗</p>
+            <p class="small-heart">Made with love 💕</p>
+        </div>
+    </div>
+</body>
+</html>
