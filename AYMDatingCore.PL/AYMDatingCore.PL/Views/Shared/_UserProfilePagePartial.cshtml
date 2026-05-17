@@ -379,6 +379,7 @@
         {
             if (User.Identity.Name != Model.AppUser.UserName && User.IsInRole("User"))
             {
+                <!-- Profile Actions (Like, Favorite, Block, Chat) -->
                 <div class="profile-actions text-center mt-4">
                     <button id="likeBtn"
                             class="action-btn like-btn @(Model.IsLiked ? "liked" : "")"
@@ -389,27 +390,30 @@
 
                     <button id="favoriteBtn"
                             class="action-btn favorite-btn @(Model.IsFavorite ? "added" : "")"
-                            title="Add to Favorites">
+                            title="Favorite">
                         <i class="@(Model.IsFavorite ? "fas fa-star" : "far fa-star")"></i>
-                        @(Model.IsFavorite ? "Is Favorited" : "Add to Favorite")
+                        @(Model.IsFavorite ? "Is Favorited" : "Add Favorite")
                     </button>
 
                     <button id="blockBtn"
                             class="action-btn block-btn @(Model.Isblocked ? "blocked" : "")"
-                            title="Block User">
+                            title="Block">
                         <i class="@(Model.Isblocked ? "fas fa-ban" : "far fa-ban")"></i>
                         @(Model.Isblocked ? "Is Blocked" : "Add block")
                     </button>
 
                     <button id="chatBtn" class="action-btn chat-btn"
-                    onclick="window.location.href='@Url.Action("Chat", "User", new { RecieverUserName = Model.AppUser.UserName })'">
+                            onclick="window.location.href='@Url.Action("Chat", "User", new { RecieverUserName = Model.AppUser.UserName })'">
                         <i class="fas fa-comments"></i> Chat
                     </button>
+                </div>
 
-                    <button class="action-btn report-btn mt-3"
+                <!-- Report Section - Separated Div at Bottom -->
+                <div class="profile-actions text-center mt-4 pt-3" style="border-top: 1px solid rgba(255,105,180,0.2);">
+                    <button class="action-btn report-btn"
                             onclick="window.location.href='@Url.Action("ReportUser", "User", new { RecieverUserName = Model.AppUser.UserName })'">
                         <i class="fas fa-flag"></i>
-                        <span>Report</span>
+                        <span>Report User</span>
                     </button>
                 </div>
             }
@@ -482,7 +486,7 @@
         setupToggleButton("likeBtn", 1, "liked", "fas fa-heart", "far fa-heart", "Is Liked", "Add Like");
 
         // ✅ Favorite button
-        setupToggleButton("favoriteBtn", 2, "added", "fas fa-star", "far fa-star", "Is Favorited", "Add to Favorite");
+        setupToggleButton("favoriteBtn", 2, "added", "fas fa-star", "far fa-star", "Is Favorited", "Add Favorite");
 
         // ✅ Block button
         setupToggleButton("blockBtn", 3, "blocked", "fas fa-ban", "far fa-ban", "Is Blocked", "Add Block");

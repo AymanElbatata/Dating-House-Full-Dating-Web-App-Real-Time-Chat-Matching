@@ -85,6 +85,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+                 <audio hidden id="GettingNewNotificationGeneral" src="~/Sounds/General_Notification_sounds.mp3" preload="auto"></audio>
 
                 <div class="collapse navbar-collapse" id="navMenu">
                     <ul class="navbar-nav ms-auto">
@@ -113,8 +114,7 @@
                         }
                         else
                         {
-@*                             <li class="nav-item"><a class="btn btn-love ms-2" asp-controller="Account" asp-action="Login">Join Now ❤️</a></li>
- *@                            <li class="nav-item"><a class="btn ms-2" asp-controller="Account" asp-action="Login">Join Now ❤️</a></li>
+                          <li class="nav-item"><a class="btn ms-2" asp-controller="Account" asp-action="Login">Join Now ❤️</a></li>
                         }
                     </ul>
                 </div>
@@ -132,6 +132,8 @@
     <main role="main" class="container mt-4">
         @RenderBody()
     </main>
+    <partial name="_Radio4Partial" />
+
         <!-- Footer -->
     <div class="back-to-top mt-2" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
         Back to top

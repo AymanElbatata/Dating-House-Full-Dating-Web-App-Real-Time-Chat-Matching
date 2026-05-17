@@ -1,0 +1,404 @@
+﻿<!-- Multi-Country Radio Player - Working Stations -->
+<style>
+    .mini-radio {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        border-radius: 60px;
+        padding: 8px 20px 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        z-index: 9999;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .mini-radio:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.6);
+        }
+
+    .radio-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        color: #ff1493;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+        .radio-btn:hover {
+            transform: scale(1.1);
+        }
+
+    .radio-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .radio-station {
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+    }
+
+    .radio-text {
+        color: rgba(255,255,255,0.8);
+        font-size: 10px;
+    }
+
+    .radio-icon {
+        font-size: 12px;
+        color: white;
+        animation: pulse 1.5s infinite;
+        cursor: pointer;
+    }
+
+    .station-selector {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        z-index: 9998;
+        min-width: 260px;
+        max-height: 450px;
+        overflow-y: auto;
+    }
+
+        .station-selector.show {
+            display: flex;
+        }
+
+    .station-option {
+        padding: 10px 15px;
+        border: none;
+        background: #f5f5f5;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s ease;
+        text-align: left;
+    }
+
+        .station-option:hover {
+            background: #ff69b4;
+            color: white;
+        }
+
+    .station-category {
+        font-weight: bold;
+        color: #ff1493;
+        padding: 8px 12px;
+        font-size: 12px;
+        border-bottom: 1px solid #ffe0f0;
+        margin-top: 5px;
+    }
+
+    @@keyframes pulse {
+        0%
+
+    {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0.5;
+        transform: scale(1);
+    }
+
+    }
+
+    .radio-message {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        border-radius: 60px;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 5px 20px rgba(255, 105, 180, 0.4);
+        z-index: 9999;
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        cursor: default;
+    }
+
+        .radio-message span {
+            color: white;
+            font-size: 12px;
+        }
+
+    @@media (max-width: 600px) {
+        .mini-radio, .radio-message
+
+    {
+        bottom: 10px;
+        right: 10px;
+        padding: 6px 15px;
+    }
+
+    .radio-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+
+    .radio-station {
+        font-size: 11px;
+    }
+
+    .radio-text, .radio-message span {
+        font-size: 10px;
+    }
+
+    .station-selector {
+        bottom: 70px;
+        right: 10px;
+        min-width: 230px;
+    }
+
+    }
+</style>
+
+<script>
+    (function() {
+        const RADIO_OWNER_KEY = "MultiRadio_OwnerTab";
+        const RADIO_ACTIVE_KEY = "MultiRadio_IsPlaying";
+
+        const thisTabId = Date.now().toString() + "_" + Math.random().toString(36).substr(2, 8);
+
+        function isRadioOwnedByOtherTab() {
+            const owner = localStorage.getItem(RADIO_OWNER_KEY);
+            return owner && owner !== thisTabId;
+        }
+
+        function claimRadioOwnership() {
+            localStorage.setItem(RADIO_OWNER_KEY, thisTabId);
+        }
+
+        function releaseRadioOwnership() {
+            const owner = localStorage.getItem(RADIO_OWNER_KEY);
+            if (owner === thisTabId) {
+                localStorage.removeItem(RADIO_OWNER_KEY);
+                localStorage.removeItem(RADIO_ACTIVE_KEY);
+            }
+        }
+
+        const isOwner = !localStorage.getItem(RADIO_OWNER_KEY);
+
+        if (isOwner) {
+            claimRadioOwnership();
+            showRadioPlayer();
+        } else {
+            showRadioMessage();
+        }
+
+        function showRadioPlayer() {
+            const radioHTML = `
+                <div id="miniRadio" class="mini-radio">
+                    <button id="radioBtn" class="radio-btn">
+                        <i class="fa-solid fa-play"></i>
+                    </button>
+                    <div class="radio-info">
+                        <span class="radio-station" id="currentStationName">🌍 BBC World Service</span>
+                        <span class="radio-text" id="currentStationType">World News 24/7</span>
+                    </div>
+                    <div class="radio-icon" id="stationSelectorBtn">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </div>
+                </div>
+                <div id="stationSelector" class="station-selector">
+
+                    <!-- 🌍 World News - Working Stations -->
+                    <div class="station-category">🌍 World News - Working</div>
+                    <button class="station-option" data-name="BBC World Service" data-type="World News 24/7" data-url="https://stream.live.vc.bbcmedia.co.uk/bbc_world_service">
+                        🌍 BBC World Service - English
+                    </button>
+                    <button class="station-option" data-name="BBC Arabic" data-type="أخبار العالم بالعربية" data-url="https://stream.live.vc.bbcmedia.co.uk/bbc_arabic_radio">
+                        📡 BBC Arabic - الإذاعة العربية
+                    </button>
+
+                    <!-- 💖 Spanish Romantic - Working Stations -->
+                    <div class="station-category">💖 Spanish Romantic Radio (Working)</div>
+                    <button class="station-option" data-name="El Portal del amor 96.5 FM" data-type="Baladas en Español - Venezuela" data-url="https://streamingned.com:7058/stream">
+                        🌹 El Portal del amor - Baladas Románticas
+                    </button>
+                    <button class="station-option" data-name="Radio Romántica" data-type="Baladas en Español e Inglés" data-url="https://streamingned.com:7062/stream">
+                        💗 Radio Romántica - The Best Ballads
+                    </button>
+
+                    <!-- 🎵 International Music -->
+                    <div class="station-category">🎵 International Music</div>
+                    <button class="station-option" data-name="Radio Paradise" data-type="Eclectic Rock & World" data-url="https://stream.radioparadise.com/mp3-320">
+                        🎧 Radio Paradise - Mixed Genres
+                    </button>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', radioHTML);
+
+            const radioDiv = document.getElementById("miniRadio");
+            const btn = document.getElementById("radioBtn");
+            const stationSelector = document.getElementById("stationSelector");
+            const stationSelectorBtn = document.getElementById("stationSelectorBtn");
+            const currentStationName = document.getElementById("currentStationName");
+            const currentStationType = document.getElementById("currentStationType");
+
+            const audio = new Audio();
+            let isPlaying = false;
+
+            let currentStationUrl = "https://stream.live.vc.bbcmedia.co.uk/bbc_world_service";
+            let currentStationDisplayName = "BBC World Service";
+            let currentStationDisplayType = "World News 24/7";
+
+            const savedStation = localStorage.getItem(RADIO_ACTIVE_KEY + "_station");
+            if (savedStation) {
+                try {
+                    const station = JSON.parse(savedStation);
+                    currentStationUrl = station.url;
+                    currentStationDisplayName = station.name;
+                    currentStationDisplayType = station.type;
+                    currentStationName.innerHTML = `${currentStationDisplayName}`;
+                    currentStationType.innerHTML = currentStationDisplayType;
+                } catch(e) {}
+            }
+
+            if (stationSelectorBtn) {
+                stationSelectorBtn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    stationSelector.classList.toggle("show");
+                });
+            }
+
+            document.addEventListener("click", function(e) {
+                if (stationSelector && !stationSelector.contains(e.target) && e.target !== stationSelectorBtn) {
+                    stationSelector.classList.remove("show");
+                }
+            });
+
+            document.querySelectorAll('.station-option').forEach(option => {
+                option.addEventListener("click", function(e) {
+                    const stationName = this.getAttribute('data-name');
+                    const stationType = this.getAttribute('data-type');
+                    const stationUrl = this.getAttribute('data-url');
+
+                    currentStationDisplayName = stationName;
+                    currentStationDisplayType = stationType;
+                    currentStationUrl = stationUrl;
+                    currentStationName.innerHTML = stationName;
+                    currentStationType.innerHTML = stationType;
+
+                    localStorage.setItem(RADIO_ACTIVE_KEY + "_station", JSON.stringify({
+                        name: stationName,
+                        type: stationType,
+                        url: stationUrl
+                    }));
+
+                    const wasPlaying = isPlaying;
+                    audio.pause();
+                    audio.src = stationUrl;
+                    audio.load();
+
+                    if (wasPlaying) {
+                        audio.play().catch(err => console.log("Play error:", err));
+                    }
+
+                    stationSelector.classList.remove("show");
+                });
+            });
+
+            if (btn) {
+                btn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    if (isPlaying) {
+                        audio.pause();
+                    } else {
+                        audio.play().catch(err => console.log("Play error:", err));
+                    }
+                });
+            }
+
+            audio.addEventListener("play", () => {
+                isPlaying = true;
+                localStorage.setItem(RADIO_ACTIVE_KEY, "true");
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-pause"></i>';
+                if (radioDiv) radioDiv.style.boxShadow = "0 5px 25px rgba(255, 105, 180, 0.8)";
+            });
+
+            audio.addEventListener("pause", () => {
+                isPlaying = false;
+                localStorage.setItem(RADIO_ACTIVE_KEY, "false");
+                if (btn) btn.innerHTML = '<i class="fa-solid fa-play"></i>';
+                if (radioDiv) radioDiv.style.boxShadow = "0 5px 20px rgba(255, 105, 180, 0.4)";
+            });
+
+            audio.addEventListener("error", () => {
+                console.log("Stream error");
+                setTimeout(() => {
+                    if (isPlaying) {
+                        audio.load();
+                        audio.play().catch(() => {});
+                    }
+                }, 5000);
+            });
+
+            document.body.addEventListener('click', function() {
+                if (!isPlaying && !audio.src) {
+                    audio.src = currentStationUrl;
+                    audio.load();
+                    audio.play().catch(() => {});
+                }
+            }, { once: true });
+
+            audio.src = currentStationUrl;
+            audio.load();
+
+            window.addEventListener("beforeunload", function() {
+                releaseRadioOwnership();
+            });
+        }
+
+        function showRadioMessage() {
+            const messageHTML = `
+                <div class="radio-message">
+                    <i class="fa-solid fa-headphones" style="color: white;"></i>
+                    <span>🎵 Radio playing in another tab 🎵</span>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', messageHTML);
+        }
+
+        window.addEventListener("storage", function(e) {
+            if (e.key === RADIO_OWNER_KEY && !e.newValue) {
+                location.reload();
+            }
+        });
+    })();
+</script>

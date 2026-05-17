@@ -1,4 +1,8 @@
-﻿
+﻿// When any page loads, check if it's chat
+if (window.location.href.indexOf("/Chat") === -1 && window.location.href.indexOf("/chat") === -1) {
+    localStorage.setItem("ChatSoundsEnabled", "true");
+}
+
     // Create connection
 const connection2 = new signalR.HubConnectionBuilder()
     .withUrl("/notificationHub")
@@ -11,16 +15,36 @@ const connection2 = new signalR.HubConnectionBuilder()
     // When like notification received
     connection2.on("ReceiveLikeNotification", function (CurrentCounter) {
         document.getElementById("currentUserCounter_Likes").textContent = CurrentCounter;
+        if (localStorage.getItem("ChatSoundsEnabled") === "true")
+            {
+                document.getElementById("GettingNewNotificationGeneral").play();
+            }
     });
 connection2.on("ReceiveViewNotification", function (CurrentCounter) {
         document.getElementById("currentUserCounter_Views").textContent = CurrentCounter;
+        if (localStorage.getItem("ChatSoundsEnabled") === "true")
+            {
+                document.getElementById("GettingNewNotificationGeneral").play();
+            }
         });
 connection2.on("ReceiveMessageNotification", function (CurrentCounter) {
         document.getElementById("currentUserCounter_Messages").textContent = CurrentCounter;
+        if (localStorage.getItem("ChatSoundsEnabled") === "true")
+            {
+                document.getElementById("GettingNewNotificationGeneral").play();
+            }
         });
 connection2.on("ReceiveFavoriteNotification", function (CurrentCounter) {
         document.getElementById("currentUserCounter_Favorites").textContent = CurrentCounter;
+        if (localStorage.getItem("ChatSoundsEnabled") === "true")
+            {
+                document.getElementById("GettingNewNotificationGeneral").play();
+            }
         });
 connection2.on("ReceiveBlockNotification", function (CurrentCounter) {
         document.getElementById("currentUserCounter_Blocks").textContent = CurrentCounter;
+        if (localStorage.getItem("ChatSoundsEnabled") === "true")
+            {
+                document.getElementById("GettingNewNotificationGeneral").play();
+            }
     });
