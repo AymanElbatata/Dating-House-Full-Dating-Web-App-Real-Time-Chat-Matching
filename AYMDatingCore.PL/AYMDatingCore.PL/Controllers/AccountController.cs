@@ -450,15 +450,20 @@ namespace AYMDatingCore.PL.Controllers
             }
             if (ModelState.IsValid)
             {
+                var user = await unitOfWork.UserManager.FindByEmailAsync(model.Email);
+
                 // Check if email already exists
-                if (await unitOfWork.UserManager.FindByEmailAsync(model.Email) == null)
+                if (user == null || user.IsDeleted)
                 {
                     ModelState.AddModelError("Email", "Email is not registered");
                     return View(model);
                 }
 
-
-                var user = await unitOfWork.UserManager.FindByEmailAsync(model.Email);
+                if (user.IsDeleted)
+                {
+                    ModelState.AddModelError("Email", "Account is Deleted");
+                    return View(model);
+                }
 
                 // 🧩 2️⃣ Get Browser and Device Info
                 string userBrowser = Request.Headers["User-Agent"].ToString();

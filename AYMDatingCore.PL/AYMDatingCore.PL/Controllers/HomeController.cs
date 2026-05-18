@@ -124,7 +124,6 @@ namespace AYMDatingCore.PL.Controllers
         }
 
         #region General Views
-
         public IActionResult PrivacyNotice()
         {
 

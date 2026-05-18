@@ -10,7 +10,7 @@ namespace AYMDatingCore.PL.DTO
     {
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
