@@ -104,7 +104,7 @@ namespace AYMDatingCore.PL
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Home/Error";
 
-                options.ExpireTimeSpan = TimeSpan.FromDays(1); // جلسة 24 ساعة
+                options.ExpireTimeSpan = TimeSpan.FromDays(30); // جلسة 30 يوم
                 options.SlidingExpiration = true;
 
                 options.Cookie.HttpOnly = true;

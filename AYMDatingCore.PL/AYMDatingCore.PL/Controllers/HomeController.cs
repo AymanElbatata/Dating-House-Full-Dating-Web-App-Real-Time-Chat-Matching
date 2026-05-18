@@ -7,6 +7,7 @@ using AYMDatingCore.Helpers;
 using AYMDatingCore.PL.DTO;
 using AYMDatingCore.PL.Helpers;
 using AYMDatingCore.PL.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -35,6 +36,7 @@ namespace AYMDatingCore.PL.Controllers
             this.configuration = configuration;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             try
@@ -70,6 +72,7 @@ namespace AYMDatingCore.PL.Controllers
             return View(data);
         }
 
+        [Authorize]
         public async Task<IActionResult> UserProfile(string? UserName)
         {
             if (string.IsNullOrEmpty(UserName))
