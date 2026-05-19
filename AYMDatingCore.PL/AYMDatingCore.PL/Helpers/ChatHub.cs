@@ -12,6 +12,7 @@ namespace AYMDatingCore.Helpers
     {
         // Username -> ConnectionId
         private static readonly ConcurrentDictionary<string, string> _onlineUsers = new();
+        private static readonly ConcurrentDictionary<string, HashSet<string>> _groupUsers = new();
         private readonly IUnitOfWork unitOfWork;
         private readonly IHubContext<NotificationHub> _notificationHubContext;
 
@@ -44,6 +45,15 @@ namespace AYMDatingCore.Helpers
             if (!string.IsNullOrEmpty(userName))
             {
                 _onlineUsers.TryRemove(userName, out _);
+
+                // Remove user from all groups
+                foreach (var group in _groupUsers)
+                {
+                    if (group.Value.Contains(userName))
+                    {
+                        group.Value.Remove(userName);
+                    }
+                }
             }
 
             await base.OnDisconnectedAsync(exception);
@@ -56,6 +66,29 @@ namespace AYMDatingCore.Helpers
         public async Task JoinGroup(string groupName)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+
+            var userName = Context.User?.Identity?.Name;
+
+            if (!string.IsNullOrEmpty(userName))
+            {
+                _groupUsers.AddOrUpdate(
+                    groupName,
+                    new HashSet<string> { userName },
+                    (key, existingUsers) =>
+                    {
+                        existingUsers.Add(userName);
+                        return existingUsers;
+                    });
+
+                // If both users are now inside same room
+                if (_groupUsers[groupName].Count >= 2)
+                {
+                    await Clients.Group(groupName)
+                        .SendAsync(
+                            "BothUsersOnline",
+                            "💖 NOW both of you can talk with Voice/Video calls");
+                }
+            }
         }
 
         public async Task LeaveGroup(string groupName)

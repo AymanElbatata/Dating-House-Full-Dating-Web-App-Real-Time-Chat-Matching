@@ -802,6 +802,15 @@
         console.error("🚨 Connection closed:", err);
     });
 
+    connection.on("BothUsersOnline", function (message) {
+
+        showCustomAlert(message);
+
+        // Optional sound
+        const audio = new Audio('/Sounds/Voice_Video_Ready.mp3');
+        audio.play();
+    });
+
     function CheckEnter() {
         if(!IsThereBlockingBetweenUsers()){
             let CurrentUserChatMessage = document.getElementById("sendButtonMsg").value;
