@@ -773,6 +773,9 @@
 <div id="customAlert" class="custom-alert"></div>
 
 <script>
+         document.getElementById("voiceCallBtn").hidden = true;
+         document.getElementById("videoCallBtn").hidden = true;
+
     const SendingMessageSound = document.getElementById("SendingMessageSound");
     let callAlertShown = false;
 
@@ -802,13 +805,30 @@
         console.error("🚨 Connection closed:", err);
     });
 
-    connection.on("BothUsersOnline", function (message) {
+    window.addEventListener("beforeunload", function () {
+        connection.invoke("LeaveGroup", "@Model.GroupName");
+    });
 
+    connection.on("BothUsersOnline", function (message) {
         showCustomAlert(message);
 
+         document.getElementById("voiceCallBtn").hidden = false;
+         document.getElementById("videoCallBtn").hidden = false;
+
         // Optional sound
-        const audio = new Audio('/Sounds/Voice_Video_Ready.mp3');
+        const audio = new Audio('/Sounds/VoiceVideoOn.mp3');
         audio.play();
+    });
+
+        connection.on("UserLeftChat", function (message) {
+
+        showCustomAlert(message, true);
+
+         document.getElementById("voiceCallBtn").hidden = true;
+         document.getElementById("videoCallBtn").hidden = true;
+        const audio = new Audio('/Sounds/VoiceVideoOff.mp3');
+        audio.play();
+
     });
 
     function CheckEnter() {

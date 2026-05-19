@@ -46,12 +46,16 @@ namespace AYMDatingCore.Helpers
             {
                 _onlineUsers.TryRemove(userName, out _);
 
-                // Remove user from all groups
                 foreach (var group in _groupUsers)
                 {
                     if (group.Value.Contains(userName))
                     {
                         group.Value.Remove(userName);
+
+                        await Clients.Group(group.Key)
+                            .SendAsync(
+                                "UserLeftChat",
+                                $"⚠️ {userName} is not here now. Voice/Video call is unavailable now.");
                     }
                 }
             }
@@ -86,7 +90,7 @@ namespace AYMDatingCore.Helpers
                     await Clients.Group(groupName)
                         .SendAsync(
                             "BothUsersOnline",
-                            "💖 NOW both of you can talk with Voice/Video calls");
+                            "💖 Now both of you can talk with Voice/Video calls");
                 }
             }
         }
@@ -94,6 +98,22 @@ namespace AYMDatingCore.Helpers
         public async Task LeaveGroup(string groupName)
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+
+            var userName = Context.User?.Identity?.Name;
+
+            if (!string.IsNullOrEmpty(userName))
+            {
+                if (_groupUsers.ContainsKey(groupName))
+                {
+                    _groupUsers[groupName].Remove(userName);
+
+                    // Notify remaining user
+                    await Clients.Group(groupName)
+                        .SendAsync(
+                            "UserLeftChat",
+                            $"⚠️ {userName} left the room. Voice/Video call is unavailable now.");
+                }
+            }
         }
 
         public async Task SendMessageToGroup(string groupName, string message, string SenderUserName, int messageId)
